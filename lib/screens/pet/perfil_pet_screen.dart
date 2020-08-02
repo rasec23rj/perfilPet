@@ -29,13 +29,13 @@ class PerfilPetScreen extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 20, left: 10),
+                  padding: EdgeInsets.only(top: 40, left: 10),
                   child: IconButton(
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                     icon: Icon(Icons.arrow_back_ios),
-                    color: Colors.white,
+                    color: Colors.redAccent[700],
                   ),
                 )
               ],
@@ -104,6 +104,13 @@ class PerfilPetScreen extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.edit),
+        backgroundColor: Colors.redAccent,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       bottomNavigationBar: CustomNavbar(),
     );
   }
