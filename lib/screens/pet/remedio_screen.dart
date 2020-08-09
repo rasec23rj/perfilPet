@@ -117,10 +117,11 @@ class _RemedioScreenState extends State<RemedioScreen> {
                             });
                           },
                           icon: Icon(
-                              widget.iconButton == null
-                                  ? Icons.close
-                                  : Icons.cancel,
-                              size: 18),
+                            widget.iconButton == null
+                                ? Icons.close
+                                : Icons.check_circle,
+                            size: 18,
+                          ),
                           label: Text(widget.textoButton == null
                               ? 'Concluir'
                               : '${widget.textoButton}'),
