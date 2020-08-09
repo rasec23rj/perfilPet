@@ -2,22 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/widget/custom_navbar.dart';
 
-var teste = TextDecoration.none;
-
 class RemedioScreen extends StatefulWidget {
   final Pet pet;
   int cor = 0;
-  RemedioScreen({this.pet, this.cor});
+  var teste = TextDecoration.none;
+  RemedioScreen({this.pet, this.cor, this.teste});
+
   @override
   _RemedioScreenState createState() => _RemedioScreenState();
 }
 
 class _RemedioScreenState extends State<RemedioScreen> {
-  TextStyle textStyle = TextStyle(
-      decoration: teste,
-      fontFamily: "Montserrat",
-      fontSize: 14,
-      fontWeight: FontWeight.bold);
   var texto = '0';
 
   @override
@@ -31,13 +26,13 @@ class _RemedioScreenState extends State<RemedioScreen> {
             Stack(
               children: <Widget>[
                 Hero(
-                  tag: pets[0].id_pet,
+                  tag: widget.pet.id_pet,
                   child: Container(
                     width: double.infinity,
                     height: 350,
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: AssetImage(pets[0].imageURL),
+                            image: AssetImage(widget.pet.imageURL),
                             fit: BoxFit.cover)),
                   ),
                 ),
@@ -72,7 +67,12 @@ class _RemedioScreenState extends State<RemedioScreen> {
                           leading: Icon(Icons.healing),
                           title: Text(
                             'Remédios',
-                            style: textStyle,
+                            style: TextStyle(
+                              decoration: widget.teste,
+                              fontFamily: "Montserrat",
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           subtitle: Text(
                             'Bromoprida, Dia 10 as 18:00hs',
@@ -86,7 +86,7 @@ class _RemedioScreenState extends State<RemedioScreen> {
                             setState(() {
                               print(widget.cor);
                               widget.cor = 1;
-                              teste = TextDecoration.lineThrough;
+                              widget.teste = TextDecoration.lineThrough;
                             });
                           },
                           icon: Icon(Icons.close, size: 18),
