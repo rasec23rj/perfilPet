@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:lifepet_app/models/pet_model.dart';
+import 'package:lifepet_app/screens/pet/perfil_pet_screen.dart';
+import 'package:lifepet_app/screens/pet/remedio_screen.dart';
 
 class CustomNavbar extends StatefulWidget {
-  int paginaAberta = 0;
+  int paginaAberta;
+  final Pet pet;
+  CustomNavbar({this.pet, this.paginaAberta});
 
   @override
   _CustomNavbarState createState() => _CustomNavbarState();
@@ -27,6 +32,11 @@ class _CustomNavbarState extends State<CustomNavbar> {
                   print(widget.paginaAberta);
                   widget.paginaAberta = 0;
                 });
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (_) => PerfilPetScreen(pet: widget.pet),
+                  ),
+                );
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +61,13 @@ class _CustomNavbarState extends State<CustomNavbar> {
               onPressed: () {
                 setState(() {
                   widget.paginaAberta = 1;
+                  print(pets[0]);
                 });
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (_) => RemedioScreen(pet: widget.pet),
+                  ),
+                );
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

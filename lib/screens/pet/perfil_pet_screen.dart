@@ -111,7 +111,10 @@ class PerfilPetScreen extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-      bottomNavigationBar: CustomNavbar(),
+      bottomNavigationBar: CustomNavbar(
+        pet: pet,
+        paginaAberta: 0,
+      ),
     );
   }
 
