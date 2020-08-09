@@ -6,7 +6,17 @@ class RemedioScreen extends StatefulWidget {
   final Pet pet;
   int cor = 0;
   var teste = TextDecoration.none;
-  RemedioScreen({this.pet, this.cor, this.teste});
+  var textoButton = '"Concluir"';
+  var iconButton = Icons.close;
+  var corButton = 0;
+
+  RemedioScreen(
+      {this.pet,
+      this.cor,
+      this.teste,
+      this.textoButton,
+      this.iconButton,
+      this.corButton});
 
   @override
   _RemedioScreenState createState() => _RemedioScreenState();
@@ -17,7 +27,6 @@ class _RemedioScreenState extends State<RemedioScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.cor);
     return Scaffold(
       body: Center(
         child: Column(
@@ -64,33 +73,57 @@ class _RemedioScreenState extends State<RemedioScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         ListTile(
-                          leading: Icon(Icons.healing),
+                          leading: Icon(Icons.healing,
+                              color: widget.cor == 0 || widget.cor == null
+                                  ? Colors.red
+                                  : Colors.green[300]),
                           title: Text(
                             'Remédios',
                             style: TextStyle(
-                              decoration: widget.teste,
-                              fontFamily: "Montserrat",
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                decoration: widget.teste,
+                                fontFamily: "Montserrat",
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: widget.cor == 0 || widget.cor == null
+                                    ? Colors.red
+                                    : Colors.green[300]),
                           ),
                           subtitle: Text(
                             'Bromoprida, Dia 10 as 18:00hs',
+                            style: TextStyle(
+                                decoration: widget.teste,
+                                fontFamily: "Montserrat",
+                                fontSize: 12,
+                                color: widget.cor == 0 || widget.cor == null
+                                    ? Colors.red
+                                    : Colors.green[300]),
                             maxLines: 10,
                           ),
                         ),
                         FlatButton.icon(
                           textColor: Colors.black,
-                          color: Colors.amber[200],
+                          color:
+                              widget.corButton == 0 || widget.corButton == null
+                                  ? Colors.amber[200]
+                                  : Colors.greenAccent[200],
                           onPressed: () {
                             setState(() {
-                              print(widget.cor);
                               widget.cor = 1;
                               widget.teste = TextDecoration.lineThrough;
+                              widget.textoButton = 'Concluido';
+                              widget.iconButton = Icons.check_circle;
+                              widget.corButton = 1;
+                              print(widget.corButton);
                             });
                           },
-                          icon: Icon(Icons.close, size: 18),
-                          label: Text("Concluir"),
+                          icon: Icon(
+                              widget.iconButton == null
+                                  ? Icons.close
+                                  : Icons.cancel,
+                              size: 18),
+                          label: Text(widget.textoButton == null
+                              ? 'Concluir'
+                              : '${widget.textoButton}'),
                         ),
                       ],
                     ),
