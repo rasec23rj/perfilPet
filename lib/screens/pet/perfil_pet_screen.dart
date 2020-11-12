@@ -78,15 +78,14 @@ class PerfilPetScreen extends StatelessWidget {
 
             //cartao
             Container(
-              margin: EdgeInsets.only(top: 30),
-              height: 120,
+              margin: EdgeInsets.only(top: 10),
+              height: 90,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: <Widget>[
                   _cartaoInfoPet('Idade', pet.idade.toString()),
                   _cartaoInfoPet('Sexo', pet.sexo.toString()),
-                  _cartaoInfoPet('Cor', pet.cor.toString()),
-                  _cartaoInfoPet('Id', pet.id_pet.toString()),
+                  _cartaoInfoPet('Cor', pet.cor.toString())
                 ],
               ),
             ),

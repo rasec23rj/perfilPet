@@ -21,12 +21,12 @@ class _CustomNavbarState extends State<CustomNavbar> {
       color: Colors.black,
       shape: CircularNotchedRectangle(),
       child: Container(
-        height: 60,
+        height: 45,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             MaterialButton(
-              minWidth: 40,
+              minWidth: 35,
               onPressed: () {
                 setState(() {
                   print(widget.paginaAberta);
@@ -61,7 +61,7 @@ class _CustomNavbarState extends State<CustomNavbar> {
               onPressed: () {
                 setState(() {
                   widget.paginaAberta = 1;
-                  print(pets[0]);
+
                 });
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
@@ -88,7 +88,7 @@ class _CustomNavbarState extends State<CustomNavbar> {
               ),
             ),
             MaterialButton(
-              minWidth: 40,
+              minWidth: 35,
               onPressed: () {
                 setState(() {
                   widget.paginaAberta = 2;
@@ -113,7 +113,7 @@ class _CustomNavbarState extends State<CustomNavbar> {
               ),
             ),
             MaterialButton(
-              minWidth: 40,
+              minWidth: 25,
               onPressed: () {
                 setState(() {
                   widget.paginaAberta = 3;

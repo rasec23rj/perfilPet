@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/screens/form_pet_screen.dart';
 import 'package:lifepet_app/screens/pet/perfil_pet_screen.dart';
-
+import 'package:lifepet_app/services/pet_service.dart';
 class HomeScreen extends StatelessWidget {
+  PetService petService = PetService();
+  List<Pet> pets = List();
+  HomeScreen(){
+    _getAllPets();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,4 +102,10 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+  void _getAllPets() {
+    List list = petService.getAllPets();
+    pets = list;
+  }
+
 }
+

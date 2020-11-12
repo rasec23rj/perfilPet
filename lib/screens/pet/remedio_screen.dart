@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
+import 'package:lifepet_app/screens/pet/form_remedio_pet_screen.dart';
 import 'package:lifepet_app/widget/custom_navbar.dart';
 
 class RemedioScreen extends StatefulWidget {
-  final Pet pet;
+  Pet pet;
   int cor = 0;
   var teste = TextDecoration.none;
   var textoButton = '"Concluir"';
@@ -108,18 +109,19 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                   : Colors.greenAccent[200],
                           onPressed: () {
                             setState(() {
-                              widget.cor = 1;
-                              widget.teste = TextDecoration.lineThrough;
-                              widget.textoButton = 'Concluido';
-                              widget.iconButton = Icons.check_circle;
-                              widget.corButton = 1;
+                              print(widget.corButton);
+                              widget.corButton == 0  ||  widget.corButton == null ? widget.corButton = 1  : widget.corButton = 0;
+                              widget.corButton == 0 ? widget.cor = 0 : widget.cor = 1;
+                              widget.corButton == 0 ? widget.teste = TextDecoration.lineThrough : widget.teste = TextDecoration.none;
+                              widget.corButton == 0 ? widget.textoButton = 'Concluido' : widget.textoButton = 'Concluir';
+
+
+
                               print(widget.corButton);
                             });
                           },
                           icon: Icon(
-                            widget.iconButton == null
-                                ? Icons.close
-                                : Icons.check_circle,
+                            widget.corButton == 1 ?  widget.iconButton = Icons.check_circle :  widget.iconButton = Icons.close,
                             size: 18,
                           ),
                           label: Text(widget.textoButton == null
@@ -136,7 +138,14 @@ class _RemedioScreenState extends State<RemedioScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FormRemedioPetScreen(pet: widget.pet,),
+            ),
+          );
+        },
         child: Icon(Icons.add),
         backgroundColor: Colors.redAccent,
       ),
