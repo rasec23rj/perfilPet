@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => PerfilPetScreen(
-              pet: pets[index],
+              id: pets[index].id_pet,
             ),
           ),
         );

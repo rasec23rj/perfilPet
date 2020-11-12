@@ -55,7 +55,7 @@ class PetService {
         sexo: 'Femia',
         cor: 'Branca ,bege ',
         bio: 'Sou um cadelinha bem carinhosa e brincanhona',
-        id_pet: 4));
+        id_pet: 5));
   }
 
   List getAllPets(){
@@ -76,4 +76,7 @@ class PetService {
     print(_petList.length);
   }
 
+  Pet getPet(int id){
+    return _petList.singleWhere((pet) =>  pet.id_pet == id);
+  }
 }

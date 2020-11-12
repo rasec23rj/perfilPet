@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
+import 'package:lifepet_app/services/pet_service.dart';
 import 'package:lifepet_app/widget/custom_navbar.dart';
 
 class PerfilPetScreen extends StatelessWidget {
-  final Pet pet;
-
-  PerfilPetScreen({this.pet});
+  final int id;
+  Pet pet;
+  PetService petService = PetService();
+  PerfilPetScreen({this.id}){
+    _getPet(id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,5 +154,9 @@ class PerfilPetScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _getPet(id){
+     pet = petService.getPet(id);
   }
 }
