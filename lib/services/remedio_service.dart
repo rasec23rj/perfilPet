@@ -15,8 +15,24 @@ class RemedioService{
     _remedioList.add(Remedio(
       nome: "Remédio X",
       data: "10/10/2020",
-      id: 123,
+      id: 1,
       pet: petService.getPet(1)
     ));
+    _remedioList.add(Remedio(
+        nome: "Remédio X",
+        data: "10/10/2020",
+        id: 2,
+        pet: petService.getPet(1)
+    ));
+    _remedioList.add(Remedio(
+        nome: "Remédio X",
+        data: "10/10/2020",
+        id: 3,
+        pet: petService.getPet(1)
+    ));
+  }
+
+  List getRemedioPets(int id){
+    return _remedioList.where((remedio) => remedio.pet.id_pet == id).toList();
   }
 }

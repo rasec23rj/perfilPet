@@ -1,26 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
+import 'package:lifepet_app/models/remedio_model.dart';
 import 'package:lifepet_app/screens/pet/form_remedio_pet_screen.dart';
+import 'package:lifepet_app/services/pet_service.dart';
+import 'package:lifepet_app/services/remedio_service.dart';
 import 'package:lifepet_app/widget/custom_navbar.dart';
 
 class RemedioScreen extends StatefulWidget {
-  Pet pet;
+  final int id;
   int cor = 0;
+  List<Remedio> remedioList = [];
+  final PetService petService = PetService();
+  final RemedioService remedioService = RemedioService();
+  Pet pet;
   var teste = TextDecoration.none;
   var textoButton = '"Concluir"';
   var iconButton = Icons.close;
   var corButton = 0;
 
   RemedioScreen(
-      {this.pet,
+      {this.id,
       this.cor,
       this.teste,
       this.textoButton,
       this.iconButton,
-      this.corButton});
+      this.corButton}) {
+    _getPet(this.id);
+    _getRemedios(this.id);
+  }
 
   @override
   _RemedioScreenState createState() => _RemedioScreenState();
+
+  void _getPet(int id) {
+    pet = petService.getPet(id);
+  }
+
+  void _getRemedios(int id) {
+    remedioList = remedioService.getRemedioPets(id);
+    print(remedioList[0].nome);
+  }
 }
 
 class _RemedioScreenState extends State<RemedioScreen> {
@@ -62,77 +81,84 @@ class _RemedioScreenState extends State<RemedioScreen> {
               height: 10,
             ),
             Expanded(
-              child: ListView(
-                children: <Widget>[
-                  Card(
-                    shadowColor: widget.cor == 0 || widget.cor == null
-                        ? Colors.red
-                        : Colors.green[300],
-                    elevation: 8.0,
-                    margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        ListTile(
-                          leading: Icon(Icons.healing,
-                              color: widget.cor == 0 || widget.cor == null
-                                  ? Colors.red
-                                  : Colors.green[300]),
-                          title: Text(
-                            'Remédios',
-                            style: TextStyle(
-                                decoration: widget.teste,
-                                fontFamily: "Montserrat",
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+              child: ListView.builder(
+                  padding: EdgeInsets.all(10),
+                  itemCount: widget.remedioList.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      shadowColor: widget.cor == 0 || widget.cor == null
+                          ? Colors.red
+                          : Colors.green[900],
+                      elevation: 8.0,
+                      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ListTile(
+                            leading: Icon(Icons.healing,
                                 color: widget.cor == 0 || widget.cor == null
                                     ? Colors.red
-                                    : Colors.green[300]),
+                                    : Colors.green[900]),
+                            title: Text(
+                              widget.remedioList[index].nome,
+                              style: TextStyle(
+                                  decoration: widget.teste,
+                                  fontFamily: "Montserrat",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: widget.cor == 0 || widget.cor == null
+                                      ? Colors.red
+                                      : Colors.green[900]),
+                            ),
+                            subtitle: Text(
+                              widget.remedioList[index].data,
+                              style: TextStyle(
+                                  decoration: widget.teste,
+                                  fontFamily: "Montserrat",
+                                  fontSize: 12,
+                                  color: widget.cor == 0 || widget.cor == null
+                                      ? Colors.red
+                                      : Colors.green[900]),
+                              maxLines: 10,
+                            ),
                           ),
-                          subtitle: Text(
-                            'Bromoprida, Dia 10 as 18:00hs',
-                            style: TextStyle(
-                                decoration: widget.teste,
-                                fontFamily: "Montserrat",
-                                fontSize: 12,
-                                color: widget.cor == 0 || widget.cor == null
-                                    ? Colors.red
-                                    : Colors.green[300]),
-                            maxLines: 10,
+                          FlatButton.icon(
+                            textColor: Colors.black,
+                            color: widget.corButton == 0 ||
+                                    widget.corButton == null
+                                ? Colors.amber[200]
+                                : Colors.greenAccent[400],
+                            onPressed: () {
+                              setState(() {
+                                widget.corButton == 0 || widget.corButton == null
+                                    ? widget.corButton = 1
+                                    : widget.corButton = 0;
+                                widget.corButton == 0
+                                    ? widget.cor = 0
+                                    : widget.cor = 1;
+                                widget.corButton == 0
+                                    ? widget.teste = TextDecoration.lineThrough
+                                    : widget.teste = TextDecoration.none;
+                                widget.corButton == 0
+                                    ? widget.textoButton = 'Concluido'
+                                    : widget.textoButton = 'Concluir';
+                              });
+
+                            },
+                            icon: Icon(
+                              widget.corButton == 1
+                                  ? widget.iconButton = Icons.check_circle
+                                  : widget.iconButton = Icons.close,
+                              size: 18,
+                            ),
+                            label: Text(widget.textoButton == null
+                                ? 'Concluir'
+                                : '${widget.textoButton}'),
                           ),
-                        ),
-                        FlatButton.icon(
-                          textColor: Colors.black,
-                          color:
-                              widget.corButton == 0 || widget.corButton == null
-                                  ? Colors.amber[200]
-                                  : Colors.greenAccent[200],
-                          onPressed: () {
-                            setState(() {
-                              print(widget.corButton);
-                              widget.corButton == 0  ||  widget.corButton == null ? widget.corButton = 1  : widget.corButton = 0;
-                              widget.corButton == 0 ? widget.cor = 0 : widget.cor = 1;
-                              widget.corButton == 0 ? widget.teste = TextDecoration.lineThrough : widget.teste = TextDecoration.none;
-                              widget.corButton == 0 ? widget.textoButton = 'Concluido' : widget.textoButton = 'Concluir';
-
-
-
-                              print(widget.corButton);
-                            });
-                          },
-                          icon: Icon(
-                            widget.corButton == 1 ?  widget.iconButton = Icons.check_circle :  widget.iconButton = Icons.close,
-                            size: 18,
-                          ),
-                          label: Text(widget.textoButton == null
-                              ? 'Concluir'
-                              : '${widget.textoButton}'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                        ],
+                      ),
+                    );
+                  }),
             ),
           ],
         ),
@@ -142,7 +168,9 @@ class _RemedioScreenState extends State<RemedioScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => FormRemedioPetScreen(pet: widget.pet,),
+              builder: (context) => FormRemedioPetScreen(
+                pet: widget.pet,
+              ),
             ),
           );
         },

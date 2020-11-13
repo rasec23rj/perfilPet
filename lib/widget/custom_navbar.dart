@@ -61,11 +61,10 @@ class _CustomNavbarState extends State<CustomNavbar> {
               onPressed: () {
                 setState(() {
                   widget.paginaAberta = 1;
-
                 });
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (_) => RemedioScreen(pet: widget.pet),
+                    builder: (_) => RemedioScreen(id: widget.pet.id_pet),
                   ),
                 );
               },
