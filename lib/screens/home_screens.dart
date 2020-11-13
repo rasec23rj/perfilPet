@@ -3,10 +3,12 @@ import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/screens/form_pet_screen.dart';
 import 'package:lifepet_app/screens/pet/perfil_pet_screen.dart';
 import 'package:lifepet_app/services/pet_service.dart';
+
 class HomeScreen extends StatelessWidget {
   PetService petService = PetService();
   List<Pet> pets = List();
-  HomeScreen(){
+
+  HomeScreen() {
     _getAllPets();
   }
 
@@ -48,64 +50,112 @@ class HomeScreen extends StatelessWidget {
           ),
         );
       },
-      child: Padding(
-        padding: EdgeInsets.only(bottom: 40),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+
+      // child: Padding(
+      //   padding: EdgeInsets.only(bottom: 40),
+      //   child: Column(
+      //     crossAxisAlignment: CrossAxisAlignment.start,
+      //     children: <Widget>[
+      //       Hero(
+      //         tag: new Text('pets[0].id_pet'),
+      //         child: Container(
+      //           width: double.infinity,
+      //           height: 250,
+      //           decoration: BoxDecoration(
+      //               borderRadius: BorderRadius.all(Radius.circular(0)),
+      //               image: DecorationImage(
+      //                   image: AssetImage(pets[index].imageURL),
+      //                   fit: BoxFit.fitWidth)),
+      //         ),
+      //       ),
+      //       Padding(
+      //         padding: EdgeInsets.fromLTRB(12, 12, 40, 0),
+      //         child: Row(
+      //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //           children: <Widget>[
+      //             Text(
+      //               pets[index].nome,
+      //               style: TextStyle(
+      //                   fontFamily: 'Montserrat',
+      //                   fontSize: 24,
+      //                   fontWeight: FontWeight.bold,
+      //                   color: Colors.black),
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      //       Padding(
+      //         padding: EdgeInsets.fromLTRB(12, 12, 40, 0),
+      //         child: Row(
+      //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //           children: <Widget>[
+      //             Text(
+      //               pets[index].bio,
+      //               style: TextStyle(
+      //                   fontFamily: 'PlayfairDisplay',
+      //                   fontSize: 14,
+      //                   fontWeight: FontWeight.w100,
+      //                   color: Colors.black87),
+      //             ),
+      //           ],
+      //         ),
+      //       )
+      //     ],
+      //   ),
+      // ),
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Row(
           children: <Widget>[
-            Hero(
-              tag: new Text('pets[0].id_pet'),
+            Expanded(
+              flex: 1,
               child: Container(
-                width: double.infinity,
-                height: 250,
+                height: 80,
+                width: 70,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(0)),
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
                     image: DecorationImage(
                         image: AssetImage(pets[index].imageURL),
                         fit: BoxFit.fitWidth)),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(12, 12, 40, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
+            Container(
+              width: 10,
+            ),
+            Expanded(
+              flex: 4,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                textDirection: TextDirection.ltr,
+                children: [
+
                   Text(
                     pets[index].nome,
                     style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontSize: 24,
+                        fontFamily: 'PlayfairDisplay',
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
                   ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(12, 12, 40, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
                   Text(
                     pets[index].bio,
                     style: TextStyle(
                         fontFamily: 'PlayfairDisplay',
-                        fontSize: 14,
+                        fontSize: 16,
                         fontWeight: FontWeight.w100,
                         color: Colors.black87),
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
     );
   }
+
   void _getAllPets() {
     List list = petService.getAllPets();
     pets = list;
   }
-
 }
-
