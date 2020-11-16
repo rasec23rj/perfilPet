@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:lifepet_app/widget/login/botao_animado.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+
+  AnimationController _animationController;
+
+  @override
+  void initState(){
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 2),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 2.0,
+                  height: MediaQuery.of(context).size.height / 2.7,
                   decoration: BoxDecoration(
                       color: Colors.redAccent,
                       borderRadius: BorderRadius.only(
@@ -61,21 +74,20 @@ class _LoginScreenState extends State<LoginScreen> {
                           BoxShadow(color: Colors.black12, blurRadius: 5)
                         ]),
                     child: TextField(
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        icon: Icon(
-                          Icons.email,
-                          color: Colors.grey,
-                        ),
-                        hintText: 'Email'
-                      )
-                    ),
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              Icons.email,
+                              color: Colors.grey,
+                            ),
+                            hintText: 'Email')),
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width / 1.2,
                     height: 45,
-                    padding:EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 4),
-                    margin: EdgeInsets.only(top: 32),
+                    padding:
+                        EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 4),
+                    margin: EdgeInsets.only(top: 32, bottom: 65),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(50)),
                         color: Colors.white,
@@ -89,10 +101,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               Icons.vpn_key,
                               color: Colors.grey,
                             ),
-                            hintText: 'Password'
-                        )
-                    ),
-                  )
+                            hintText: 'Password')),
+                  ),
+                  BotaoAnimado(controller: _animationController,),
                 ],
               ),
             ),
