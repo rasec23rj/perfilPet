@@ -25,8 +25,10 @@ class RemedioScreen extends StatefulWidget {
       this.textoButton,
       this.iconButton,
       this.corButton}) {
-    _getPet(this.id);
-    _getRemedios(this.id);
+    if (this.id != null) {
+      _getPet(this.id);
+      _getRemedios(this.id);
+    }
   }
 
   @override
@@ -38,7 +40,6 @@ class RemedioScreen extends StatefulWidget {
 
   void _getRemedios(int id) {
     remedioList = remedioService.getRemedioPets(id);
-    print(remedioList[0].nome);
   }
 }
 
@@ -87,73 +88,92 @@ class _RemedioScreenState extends State<RemedioScreen> {
                   itemBuilder: (context, index) {
                     return Card(
                       shadowColor: widget.cor == 0 || widget.cor == null
-                          ? Colors.red
+                          ? Colors.black
                           : Colors.green[900],
-                      elevation: 8.0,
+                      elevation: 10.0,
                       margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          ListTile(
-                            leading: Icon(Icons.healing,
-                                color: widget.cor == 0 || widget.cor == null
-                                    ? Colors.red
-                                    : Colors.green[900]),
-                            title: Text(
-                              widget.remedioList[index].nome,
-                              style: TextStyle(
-                                  decoration: widget.teste,
-                                  fontFamily: "Montserrat",
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: widget.cor == 0 || widget.cor == null
-                                      ? Colors.red
-                                      : Colors.green[900]),
-                            ),
-                            subtitle: Text(
-                              widget.remedioList[index].data,
-                              style: TextStyle(
-                                  decoration: widget.teste,
-                                  fontFamily: "Montserrat",
-                                  fontSize: 12,
-                                  color: widget.cor == 0 || widget.cor == null
-                                      ? Colors.red
-                                      : Colors.green[900]),
-                              maxLines: 10,
-                            ),
-                          ),
-                          FlatButton.icon(
-                            textColor: Colors.black,
-                            color: widget.corButton == 0 ||
-                                    widget.corButton == null
-                                ? Colors.amber[200]
-                                : Colors.greenAccent[400],
-                            onPressed: () {
-                              setState(() {
-                                widget.corButton == 0 || widget.corButton == null
-                                    ? widget.corButton = 1
-                                    : widget.corButton = 0;
-                                widget.corButton == 0
-                                    ? widget.cor = 0
-                                    : widget.cor = 1;
-                                widget.corButton == 0
-                                    ? widget.teste = TextDecoration.lineThrough
-                                    : widget.teste = TextDecoration.none;
-                                widget.corButton == 0
-                                    ? widget.textoButton = 'Concluido'
-                                    : widget.textoButton = 'Concluir';
-                              });
+                          Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: ListTile(
+                                  leading: Icon(Icons.healing,
+                                      color:
+                                      widget.remedioList[index].id  == index || widget.cor == null
+                                              ? Colors.red
+                                              : Colors.green[900]),
+                                  title: Text(
+                                    widget.remedioList[index].nome,
+                                    style: TextStyle(
+                                        decoration: widget.teste,
+                                        fontFamily: "Montserrat",
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: widget.cor == 0 ||
+                                                widget.cor == null
+                                            ? Colors.red
+                                            : Colors.green[900]),
+                                  ),
+                                  subtitle: Text(
+                                    widget.remedioList[index].data,
+                                    style: TextStyle(
+                                        decoration: widget.teste,
+                                        fontFamily: "Montserrat",
+                                        fontSize: 12,
+                                        color: widget.cor == 0 ||
+                                                widget.cor == null
+                                            ? Colors.red
+                                            : Colors.green[900]),
+                                    maxLines: 10,
+                                  ),
+                                ),
+                              ),
 
-                            },
-                            icon: Icon(
-                              widget.corButton == 1
-                                  ? widget.iconButton = Icons.check_circle
-                                  : widget.iconButton = Icons.close,
-                              size: 18,
-                            ),
-                            label: Text(widget.textoButton == null
-                                ? 'Concluir'
-                                : '${widget.textoButton}'),
+                              Expanded(
+                                flex: 1,
+                                child: FlatButton.icon(
+                                  minWidth: 10,
+                                  textColor: Colors.black,
+                                  color: widget.corButton == 0 ||
+                                          widget.corButton == null
+                                      ? Colors.amber[200]
+                                      : Colors.greenAccent[400],
+                                  onPressed: () {
+                                    setState(() {
+                                      print(widget.remedioList[index].id);
+                                      print("index:  ${index}");
+                                      widget.corButton == 0 ||
+                                              widget.corButton == null
+                                          ? widget.corButton = 1
+                                          : widget.corButton = 0;
+                                      widget.corButton == 0
+                                          ? widget.cor = 0
+                                          : widget.cor = 1;
+                                      widget.corButton == 0
+                                          ? widget.teste =
+                                              TextDecoration.lineThrough
+                                          : widget.teste = TextDecoration.none;
+                                      widget.corButton == 0
+                                          ? widget.textoButton = 'Concluido'
+                                          : widget.textoButton = 'Concluir';
+
+                                    });
+                                  },
+                                  icon: Icon(
+                                    widget.corButton == 1
+                                        ? widget.iconButton = Icons.check_circle
+                                        : widget.iconButton = Icons.close,
+                                    size: 15,
+                                  ),
+                                  label: Text(widget.textoButton == null
+                                      ? 'Concluir'
+                                      : '${widget.textoButton}'),
+                                ),
+                              )
+                            ],
                           ),
                         ],
                       ),
@@ -169,7 +189,7 @@ class _RemedioScreenState extends State<RemedioScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => FormRemedioPetScreen(
-                pet: widget.pet,
+                id: widget.pet.id_pet,
               ),
             ),
           );

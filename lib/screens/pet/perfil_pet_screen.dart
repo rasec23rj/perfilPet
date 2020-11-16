@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
+import 'package:lifepet_app/screens/form_pet_screen.dart';
 import 'package:lifepet_app/services/pet_service.dart';
 import 'package:lifepet_app/widget/custom_navbar.dart';
 
@@ -108,7 +109,11 @@ class PerfilPetScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_)=> FormPetScreen(id: pet.id_pet)));
+
+        },
         child: Icon(Icons.edit),
         backgroundColor: Colors.redAccent,
       ),

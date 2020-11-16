@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => FormPetScreen(),
+              builder: (context) => FormPetScreen(id: -1),
             ),
           );
         },

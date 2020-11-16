@@ -4,13 +4,19 @@ import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/services/pet_service.dart';
 
 class FormPetScreen extends StatefulWidget {
-  Pet newPet;
-  PetService petService = PetService();
+  int id;
+
+  FormPetScreen({this.id});
+
   @override
   _FormPetScreenState createState() => _FormPetScreenState();
 }
 
 class _FormPetScreenState extends State<FormPetScreen> {
+  Pet pet;
+
+  PetService petService = PetService();
+
   String corPet = 'Branco';
   String sexoPet = 'Macho';
 
@@ -20,11 +26,23 @@ class _FormPetScreenState extends State<FormPetScreen> {
   final _descricaoControler = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.id != -1) {
+      _getPet(widget.id);
+      _nomeControler.text = pet.nome;
+      _bioControler.text = pet.bio;
+      _idadeControler.text = pet.idade.toString();
+      _descricaoControler.text = pet.descricao;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     Pet newPet;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro de Pet"),
+        title: Text(pet != null ? "Edição do Pet ": "Cadastro de Pet"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -97,15 +115,13 @@ class _FormPetScreenState extends State<FormPetScreen> {
                             sexo: sexoPet,
                             descricao: _descricaoControler.text,
                             cor: corPet),
-                            widget.petService.addPet(newPet),
+                         pet != null ? petService.updatePet(pet.id_pet, newPet) :  petService.addPet(newPet),
                         Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => HomeScreen())
-                        ),
+                            MaterialPageRoute(builder: (_) => HomeScreen())),
                       },
-
                       color: Colors.redAccent,
                       child: Text(
-                        "Cadastrar",
+                        pet != null ? "Salvar ": "Cadastrar",
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
@@ -137,5 +153,9 @@ class _FormPetScreenState extends State<FormPetScreen> {
         ),
       ),
     );
+  }
+
+  void _getPet(int id) {
+    pet = petService.getPet(id);
   }
 }

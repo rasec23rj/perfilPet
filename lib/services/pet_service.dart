@@ -76,6 +76,15 @@ class PetService {
     print(_petList.length);
   }
 
+  void updatePet(int id, Pet pet){
+    Pet peteditar = getPet(id);
+    peteditar.nome = pet.nome;
+    peteditar.descricao = pet.descricao;
+    peteditar.idade = pet.idade;
+    peteditar.bio = pet.bio;
+    peteditar.sexo = pet.sexo;
+    peteditar.cor = pet.cor;
+  }
   Pet getPet(int id){
     return _petList.singleWhere((pet) =>  pet.id_pet == id);
   }
