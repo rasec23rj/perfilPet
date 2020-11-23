@@ -18,5 +18,29 @@ class Pet {
     this.bio,
     this.id_pet,
   });
+
+  Map<String, dynamic> toMap(){
+    return {
+
+      'nome': nome,
+      'imageURL': imageURL,
+      'descricao': descricao,
+      'idade':  idade,
+      'sexo': sexo,
+      'cor': cor,
+      'bio':  bio
+
+    };
+  }
+  Pet.fromMap(Map map) {
+    id_pet= map['id_pet'];
+    nome= map['nome'];
+    imageURL= 'assets/images/pet.png';
+    descricao= map['descricao'];
+    idade= map['idade'];
+    cor= map['cor'];
+    sexo= map['sexo'];
+    bio= map['bio'];
+  }
 }
 

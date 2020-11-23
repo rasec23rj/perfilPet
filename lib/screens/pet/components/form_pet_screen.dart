@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lifepet_app/screens/home_screens.dart';
+import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/home/home_screens.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/services/pet_service.dart';
 
@@ -17,8 +17,9 @@ class _FormPetScreenState extends State<FormPetScreen> {
 
   PetService petService = PetService();
 
-  String corPet = 'Branco';
-  String sexoPet = 'Macho';
+  String _corPet = 'Branco';
+  String _sexoPet = 'Macho';
+  Future<Pet> _loadPet;
 
   final _nomeControler = TextEditingController();
   final _bioControler = TextEditingController();
@@ -28,12 +29,18 @@ class _FormPetScreenState extends State<FormPetScreen> {
   @override
   void initState() {
     super.initState();
+
     if (widget.id != -1) {
-      _getPet(widget.id);
-      _nomeControler.text = pet.nome;
-      _bioControler.text = pet.bio;
-      _idadeControler.text = pet.idade.toString();
-      _descricaoControler.text = pet.descricao;
+      _loadPet = _getPet(widget.id);
+      _loadPet.then((value) => {
+            _nomeControler.text = value.nome,
+            _bioControler.text = value.bio,
+            _idadeControler.text = value.idade.toString(),
+            _descricaoControler.text = value.descricao,
+            _sexoPet = value.sexo,
+            _corPet = value.cor,
+            pet = value,
+          });
     }
   }
 
@@ -42,7 +49,7 @@ class _FormPetScreenState extends State<FormPetScreen> {
     Pet newPet;
     return Scaffold(
       appBar: AppBar(
-        title: Text(pet != null ? "Edição do Pet ": "Cadastro de Pet"),
+        title: Text(pet != null ? "Edição do Pet " : "Cadastro de Pet"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -55,6 +62,7 @@ class _FormPetScreenState extends State<FormPetScreen> {
                   controller: _nomeControler,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(labelText: "Nome do pet"),
+                  maxLength: 10,
                 ),
                 TextFormField(
                   controller: _bioControler,
@@ -67,10 +75,10 @@ class _FormPetScreenState extends State<FormPetScreen> {
                   decoration: InputDecoration(labelText: "Idade"),
                 ),
                 DropdownButtonFormField(
-                  value: sexoPet,
+                  value: _sexoPet,
                   onChanged: (String sexoSelecionado) {
                     setState(() {
-                      sexoPet = sexoSelecionado;
+                      _sexoPet = sexoSelecionado;
                     });
                   },
                   items: <String>['Macho', 'Femea']
@@ -87,10 +95,10 @@ class _FormPetScreenState extends State<FormPetScreen> {
                   decoration: InputDecoration(labelText: "Descricao"),
                 ),
                 DropdownButtonFormField(
-                  value: corPet,
+                  value: _corPet,
                   onChanged: (String corSelecionada) {
                     setState(() {
-                      corPet = corSelecionada;
+                      _corPet = corSelecionada;
                     });
                   },
                   items: <String>['Branco', 'Preto', 'Marrom', 'Amarelo']
@@ -112,16 +120,19 @@ class _FormPetScreenState extends State<FormPetScreen> {
                             nome: _nomeControler.text,
                             bio: _bioControler.text,
                             idade: int.parse(_idadeControler.text),
-                            sexo: sexoPet,
+                            sexo: _sexoPet,
                             descricao: _descricaoControler.text,
-                            cor: corPet),
-                         pet != null ? petService.updatePet(pet.id_pet, newPet) :  petService.addPet(newPet),
+                            cor: _corPet),
+                        //petService.addPet(newPet),
+                        pet != null
+                            ? petService.updatePet(pet.id_pet, newPet)
+                            : petService.addPet(newPet),
                         Navigator.of(context).push(
                             MaterialPageRoute(builder: (_) => HomeScreen())),
                       },
                       color: Colors.redAccent,
                       child: Text(
-                        pet != null ? "Salvar ": "Cadastrar",
+                        pet != null ? "Salvar " : "Cadastrar",
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
@@ -155,7 +166,7 @@ class _FormPetScreenState extends State<FormPetScreen> {
     );
   }
 
-  void _getPet(int id) {
-    pet = petService.getPet(id);
+  Future<Pet> _getPet(int id) async {
+    return await petService.getPet(id);
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/screens/pet/perfil_pet_screen.dart';
-import 'package:lifepet_app/screens/pet/remedio_screen.dart';
+import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/remedio/remedio_screen.dart';
 
 class CustomNavbar extends StatefulWidget {
   int paginaAberta;
