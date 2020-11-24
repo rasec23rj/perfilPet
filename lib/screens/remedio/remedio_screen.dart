@@ -5,6 +5,7 @@ import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/remedi
 import 'package:lifepet_app/services/pet_service.dart';
 import 'package:lifepet_app/services/remedio_service.dart';
 import 'package:lifepet_app/components/custom_navbar.dart';
+import 'package:intl/intl.dart';
 
 class RemedioScreen extends StatefulWidget {
   int id;
@@ -34,7 +35,10 @@ class _RemedioScreenState extends State<RemedioScreen> {
   List<Remedio> remedioList = [];
   Pet pet;
   Future<Pet> _loadPet;
-  Future<Remedio> _loadRemedio;
+  Future<List> _loadRemedio;
+  DateTime selectdDate = DateTime.now();
+  String updatedDt;
+  String horaTimer;
 
   @override
   void initState() {
@@ -85,115 +89,160 @@ class _RemedioScreenState extends State<RemedioScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                    Expanded(
-                      child: ListView.builder(
-                          padding: EdgeInsets.all(10),
-                          itemCount: remedioList.length,
-                          itemBuilder: (context, index) {
-                            final item = remedioList[index];
-                            return Card(
-                              key: Key(item.id.toString()),
-                              shadowColor: widget.cor == 0 || widget.cor == null
-                                  ? Colors.black
-                                  : Colors.green[900],
-                              elevation: 10.0,
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 6),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      // Expanded(
-                                      //   flex: 2,
-                                      //   child: ListTile(
-                                      //     leading: Icon(Icons.healing,
-                                      //         color: remedioList[index].id ==
-                                      //                     index ||
-                                      //                 widget.cor == null
-                                      //             ? Colors.red
-                                      //             : Colors.green[900]),
-                                      //     title: Text(
-                                      //       remedioList[index].nome,
-                                      //       style: TextStyle(
-                                      //           decoration: widget.teste,
-                                      //           fontFamily: "Montserrat",
-                                      //           fontSize: 14,
-                                      //           fontWeight: FontWeight.bold,
-                                      //           color: widget.cor == 0 ||
-                                      //                   widget.cor == null
-                                      //               ? Colors.red
-                                      //               : Colors.green[900]),
-                                      //     ),
-                                      //     subtitle: Text(
-                                      //       remedioList[index].data,
-                                      //       style: TextStyle(
-                                      //           decoration: widget.teste,
-                                      //           fontFamily: "Montserrat",
-                                      //           fontSize: 12,
-                                      //           color: widget.cor == 0 ||
-                                      //                   widget.cor == null
-                                      //               ? Colors.red
-                                      //               : Colors.green[900]),
-                                      //       maxLines: 10,
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                      // Expanded(
-                                      //   flex: 1,
-                                      //   child: FlatButton.icon(
-                                      //     minWidth: 10,
-                                      //     textColor: Colors.black,
-                                      //     color: widget.corButton == 0 ||
-                                      //             widget.corButton == null
-                                      //         ? Colors.amber[200]
-                                      //         : Colors.greenAccent[400],
-                                      //     onPressed: () {
-                                      //       setState(() {
-                                      //         print("item ${index}");
-                                      //         print("item ${index}");
-                                      //
-                                      //         if (remedioList[index]
-                                      //                 .pet
-                                      //                 .id_pet ==
-                                      //             pet.id_pet) {
-                                      //           // widget.corButton == 0 ||
-                                      //           //    widget.corButton == null
-                                      //           //    ? widget.corButton = 1
-                                      //           //    : widget.corButton = 0;
-                                      //           // widget.corButton == 0
-                                      //           //     ? widget.cor = 0
-                                      //           //     : widget.cor = 1;
-                                      //           // widget.corButton == 0
-                                      //           //     ? widget.teste =
-                                      //           //     TextDecoration.lineThrough
-                                      //           //     : widget.teste = TextDecoration.none;
-                                      //           // widget.corButton == 0
-                                      //           //     ? widget.textoButton = 'Concluido'
-                                      //           //     : widget.textoButton = 'Concluir';
-                                      //         }
-                                      //       });
-                                      //     },
-                                      //     icon: Icon(
-                                      //       widget.corButton == 1
-                                      //           ? widget.iconButton =
-                                      //               Icons.check_circle
-                                      //           : widget.iconButton =
-                                      //               Icons.close,
-                                      //       size: 15,
-                                      //     ),
-                                      //     label: Text(widget.textoButton == null
-                                      //         ? 'Concluir'
-                                      //         : '${widget.textoButton}'),
-                                      //   ),
-                                      // )
-                                    ],
-                                  ),
-                                ],
+                    FutureBuilder(
+                        future: _loadRemedio,
+                        builder: (BuildContext context,
+                            AsyncSnapshot asyncSnapshot) {
+                          if (asyncSnapshot.hasData) {
+                            remedioList = asyncSnapshot.data;
+
+                            return Expanded(
+                              child: ListView.builder(
+                                  padding: EdgeInsets.all(10),
+                                  itemCount: remedioList.length,
+                                  itemBuilder: (context, index) {
+                                    final item = remedioList[index];
+                                    _selectedDate(remedioList[index].data);
+                                    _selectedHora(remedioList[index].hora);
+
+                                    return Card(
+                                      key: Key(item.id.toString()),
+                                      shadowColor:
+                                          widget.cor == 0 || widget.cor == null
+                                              ? Colors.black
+                                              : Colors.green[900],
+                                      elevation: 10.0,
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 6),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                flex: 2,
+                                                child: ListTile(
+                                                  leading: Icon(Icons.healing,
+                                                      color: remedioList[index]
+                                                                      .id ==
+                                                                  index ||
+                                                              widget.cor == null
+                                                          ? Colors.red
+                                                          : Colors.green[900]),
+                                                  title: Text(
+                                                    remedioList[index].nome,
+                                                    style: TextStyle(
+                                                        decoration:
+                                                            widget.teste,
+                                                        fontFamily:
+                                                            "Montserrat",
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: widget.cor ==
+                                                                    0 ||
+                                                                widget.cor ==
+                                                                    null
+                                                            ? Colors.red
+                                                            : Colors
+                                                                .green[900]),
+                                                  ),
+                                                  subtitle: Text(
+                                                    updatedDt =
+                                                        "${updatedDt} -  ${horaTimer}",
+                                                    style: TextStyle(
+                                                        decoration:
+                                                            widget.teste,
+                                                        fontFamily:
+                                                            "Montserrat",
+                                                        fontSize: 12,
+                                                        color: widget.cor ==
+                                                                    0 ||
+                                                                widget.cor ==
+                                                                    null
+                                                            ? Colors.red
+                                                            : Colors
+                                                                .green[900]),
+                                                    maxLines: 10,
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                flex: 1,
+                                                child: FlatButton.icon(
+                                                  minWidth: 10,
+                                                  textColor: Colors.black,
+                                                  color: widget.corButton ==
+                                                              0 ||
+                                                          widget.corButton ==
+                                                              null
+                                                      ? Colors.amber[200]
+                                                      : Colors.greenAccent[400],
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      if (item.id.toString() ==
+                                                          item.id.toString()) {
+                                                        print(
+                                                            "item.id.toString() ${item.id.toString()}");
+                                                        if(item.id.toString() ==
+                                                            item.id.toString()){
+                                                              widget.corButton == 0 ||
+                                                              widget.corButton == null
+                                                              ? widget.corButton = 1
+                                                              : widget.corButton = 0;
+                                                        }
+
+                                                      }
+                                                      // widget.corButton == 0 ||
+                                                      //    widget.corButton == null
+                                                      //    ? widget.corButton = 1
+                                                      //    : widget.corButton = 0;
+                                                      // widget.corButton == 0
+                                                      //     ? widget.cor = 0
+                                                      //     : widget.cor = 1;
+                                                      // widget.corButton == 0
+                                                      //     ? widget.teste =
+                                                      //     TextDecoration.lineThrough
+                                                      //     : widget.teste = TextDecoration.none;
+                                                      // widget.corButton == 0
+                                                      //     ? widget.textoButton = 'Concluido'
+                                                      //     : widget.textoButton = 'Concluir';
+                                                    });
+                                                  },
+                                                  icon: Icon(
+                                                    widget.corButton == 1
+                                                        ? widget.iconButton =
+                                                            Icons.check_circle
+                                                        : widget.iconButton =
+                                                            Icons.close,
+                                                    size: 15,
+                                                  ),
+                                                  label: Text(widget
+                                                              .textoButton ==
+                                                          null
+                                                      ? 'Concluir'
+                                                      : '${widget.textoButton}'),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                            );
+                          } else if (asyncSnapshot.hasError) {
+                            return Center(
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.redAccent,
                               ),
                             );
-                          }),
-                    ),
+                          } else {
+                            return Center(
+                              child: Text("Este pet não possui remédios"),
+                            );
+                          }
+                        }),
                   ],
                 ),
               ),
@@ -230,7 +279,23 @@ class _RemedioScreenState extends State<RemedioScreen> {
     return await petService.getPet(id);
   }
 
-  Future<Remedio> _getRemedios(int id) async {
-   // return await remedioService.getRemedioPets(id);
+  Future<List> _getRemedios(int id) async {
+    return await remedioService.getRemedioPets(id);
+  }
+
+  Future<void> _selectedDate(String dateRem) async {
+    String strDt = dateRem;
+    DateTime parseDt = DateTime.parse(strDt);
+    var newFormat = DateFormat("dd/MM/yyyy");
+
+    if (dateRem != null) {
+      updatedDt = newFormat.format(parseDt);
+    }
+  }
+
+  Future<void> _selectedHora(String horaRem) async {
+    if (horaRem != null) {
+      horaTimer = horaRem;
+    }
   }
 }

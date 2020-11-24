@@ -7,20 +7,27 @@ import 'package:lifepet_app/utils/db_utils.dart';
 class RemedioService {
   List<Remedio> _remedioList = [];
   final PetService petService = PetService();
-
-
+  List<String> colunas = ["id", "nome", "data","hora", "pet"];
   Future<List> getRemedioPets(int id) async {
-    final dataUtils =  await DbUtil.getData("remedios");
-    //_remedioList = dataUtils.map((e) => Remedio).toString();
-   // return
+    String whereString = "pet = ?";
+    List<dynamic> whereArgumento = [id];
+
+    final dataList = await DbUtil.getDataWhere(
+        "remedios", colunas, whereString, whereArgumento);
+
+    return dataList.map((remedios) => Remedio.fromMap(remedios)).toList();
   }
 
-  void addRemedio(Remedio remedio) {
-    return _remedioList.add(Remedio(
-      nome: remedio.nome,
-      data: remedio.data,
-      id: Random().nextInt(100),
-      pet: remedio.pet
-    ));
+  void addRemedio(Remedio remedio) async {
+    DbUtil.insertData("remedios", remedio.toMap());
+
+  }
+
+  Future<Remedio> getRemedio(int id) async {
+
+    String whereString = "id = ?";
+    List<dynamic> whereArgumento = [id];
+    final dataList = await DbUtil.getDataWhere("remedios", colunas, whereString, whereArgumento);
+    return Remedio.fromMap(dataList.first);
   }
 }
