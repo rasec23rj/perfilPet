@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:lifepet_app/helpers/notifications_manager.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/models/remedio_model.dart';
 import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/remedio/components/form_remedio_pet_screen.dart';
@@ -29,6 +31,8 @@ class RemedioScreen extends StatefulWidget {
 }
 
 class _RemedioScreenState extends State<RemedioScreen> {
+  int _counter = 0;
+  NotificationManager notificationManager = NotificationManager();
   var texto = '0';
   final PetService petService = PetService();
   final RemedioService remedioService = RemedioService();
@@ -44,9 +48,13 @@ class _RemedioScreenState extends State<RemedioScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     _loadPet = _getPet(widget.id);
     _loadRemedio = _getRemedios(widget.id);
+    notificationManager.initialuzeNotificatios();
+
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +112,9 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                     final item = remedioList[index];
                                     _selectedDate(remedioList[index].data);
                                     _selectedHora(remedioList[index].hora);
+                                   // _showNotificationAgenda(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
+                                    _sheduleDailyNotifications(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
+                                   // _showNotificationAgendaTeste(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
 
                                     return Card(
                                       key: Key(item.id.toString()),
@@ -132,10 +143,8 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                                   title: Text(
                                                     remedioList[index].nome,
                                                     style: TextStyle(
-                                                        decoration:
-                                                            widget.teste,
-                                                        fontFamily:
-                                                            "Montserrat",
+                                                        decoration: widget.teste,
+                                                        fontFamily: "Montserrat",
                                                         fontSize: 14,
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -184,14 +193,19 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                                           item.id.toString()) {
                                                         print(
                                                             "item.id.toString() ${item.id.toString()}");
-                                                        if(item.id.toString() ==
-                                                            item.id.toString()){
-                                                              widget.corButton == 0 ||
-                                                              widget.corButton == null
-                                                              ? widget.corButton = 1
-                                                              : widget.corButton = 0;
+                                                        if (item.id
+                                                                .toString() ==
+                                                            item.id
+                                                                .toString()) {
+                                                          widget.corButton ==
+                                                                      0 ||
+                                                                  widget.corButton ==
+                                                                      null
+                                                              ? widget
+                                                                  .corButton = 1
+                                                              : widget
+                                                                  .corButton = 0;
                                                         }
-
                                                       }
                                                       // widget.corButton == 0 ||
                                                       //    widget.corButton == null
@@ -266,6 +280,7 @@ class _RemedioScreenState extends State<RemedioScreen> {
                 pet: pet,
                 paginaAberta: 1,
               ),
+
             );
           } else {
             return Center(
@@ -298,4 +313,67 @@ class _RemedioScreenState extends State<RemedioScreen> {
       horaTimer = horaRem;
     }
   }
+
+  void _showNotificationAgenda(String horaRemedio, String dataRemedio, String nome, String pet) {
+
+    String strDt = dataRemedio;
+    DateTime parseDt = DateTime.parse(strDt);
+    var newFormat = DateFormat("dd/MM/yyyy");
+    var now = new DateTime.now();
+
+    int hora = int.parse(horaRemedio.substring(0,2));
+    int miniute = int.parse(horaRemedio.substring(3,5));
+    String horaFinal = "${hora}:${miniute}";
+
+    String horaNow = "${now.hour}:${now.minute}";
+    String dateRemedioTeste  = newFormat.format(parseDt);
+    String dateRemedioNow  = newFormat.format(now);
+
+    print("horaNow: ${horaNow}");
+    print("horaFinal: ${horaFinal}");
+    print("dateRemedioTeste: ${dateRemedioTeste}");
+    print("dateRemedioNow: ${dateRemedioNow}");
+
+    if(horaNow ==  horaFinal && dateRemedioTeste == dateRemedioNow){
+      print("horaFinal if: ${horaFinal}");
+    }
+    if (dataRemedio != null) {
+     notificationManager.showNotificationsAgenda(hora,miniute,dataRemedio, nome, pet);
+
+    }
+  }
+  void _showNotificationAgendaTeste(String horaRemedio, String dataRemedio, String nome, String pet) {
+
+    String strDt = dataRemedio;
+    DateTime parseDt = DateTime.parse(strDt);
+    var newFormat = DateFormat("dd/MM/yyyy");
+    var now = new DateTime.now();
+
+    int hora = int.parse(horaRemedio.substring(0,2));
+    int miniute = int.parse(horaRemedio.substring(3,5));
+    String horaFinal = "${hora}:${miniute}";
+
+    String horaNow = "${now.hour}:${now.minute}";
+    String dateRemedioTeste  = newFormat.format(parseDt);
+    String dateRemedioNow  = newFormat.format(now);
+
+    if(horaNow ==  now && dateRemedioTeste == dateRemedioNow && dataRemedio != null){
+     notificationManager.showNotificationsAgendaTeste(hora,miniute,dateRemedioTeste, nome, pet);
+    }
+    if (dataRemedio != null) {
+      updatedDt = newFormat.format(parseDt);
+    }
+
+  }
+  void _sheduleDailyNotifications(String horaRemedio, String dataRemedio, String nome, String pet){
+    int hora = int.parse(horaRemedio.substring(0,2));
+    int miniute = int.parse(horaRemedio.substring(3,5));
+    String strDt = dataRemedio;
+    DateTime parseDt = DateTime.parse(strDt);
+    var newFormat = DateFormat("dd/MM/yyyy");
+    String dateRemedioFinal = newFormat.format(parseDt);
+      notificationManager.sheduleDailyNotifications(hora,miniute,dateRemedioFinal, nome, pet);
+
+  }
+
 }

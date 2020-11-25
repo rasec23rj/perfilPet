@@ -4,7 +4,7 @@ import 'package:path/path.dart' as path;
 class DbUtil {
   static Future<sql.Database> database() async {
     final dbPath = await sql.getDatabasesPath();
-
+//sql.deleteDatabase('pets.db');
     return sql.openDatabase(path.join(dbPath, 'pets.db'),
         onCreate: (db, version) {
       _createDb(db);
