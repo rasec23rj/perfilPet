@@ -24,13 +24,13 @@ class NotificationManager {
     var initializationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
 
-    var initializationSettingsIOS = IOSInitializationSettings( );
+    var initializationSettingsIOS = IOSInitializationSettings();
     var initializationSettings = InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     _flutterLocalNotificationsPlugin
         .initialize(initializationSettings)
-        .then((value) => _agendaNotificationTeste(0, 0, '', '', ''));
+        .then((value) => _showDailyAtTime(0, 0, '', '', ''));
 
     return _flutterLocalNotificationsPlugin;
   }
@@ -56,10 +56,19 @@ class NotificationManager {
       int hora, int minute, String dataRemedio, String nome, String pet) {
     _agendaNotification(hora, minute, dataRemedio, nome, pet);
   }
+  void agendaNT(
+      int hora, int minute, String dataRemedio, String nome, String pet) {
+    _agenda(hora, minute, dataRemedio, nome, pet);
+  }
 
   void showNotificationsAgendaTeste(
       int hora, int minute, String dataRemedio, String nome, String pet) {
     _agendaNotificationTeste(hora, minute, dataRemedio, nome, pet);
+  }
+
+  void showNotificationsAgendaPeriodo(
+      int hora, int minute, String dataRemedio, String nome, String pet) {
+    _agendaNotificationPeriodo(hora, minute, dataRemedio, nome, pet);
   }
 
   Future<bool> getCheckNotificationPermStatus() {
@@ -115,6 +124,7 @@ class NotificationManager {
   Future<void> _agendaNotification(
       int hora, int minute, String dataRemedio, String nome, String pet) async {
     var time = Time(17, 45, 0);
+    final List semana = ['segunda', 'terça'];
     print("time: ${time.hour}:${time.minute}:${time.second}");
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'show weekly channel id',
@@ -127,7 +137,7 @@ class NotificationManager {
         0,
         'Remedio ${nome} pet ${pet}',
         'Weekly notification shown on Monday at approximately ${time.hour}:${time.minute}:${time.second}',
-        Day.Monday,
+        Day.Thursday,
         time,
         platformChannelSpecifics);
   }
@@ -139,7 +149,7 @@ class NotificationManager {
           "_agendaNotificationTeste: ${hora}:${minute}  ${dataRemedio}  ${nome}  ${pet}");
 
       var scheduledNotificationDateTime =
-          DateTime.now().add(Duration(seconds: 5));
+          DateTime.now().add(Duration(hours: 1));
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
           'your other channel id',
           'your other channel name',
@@ -155,6 +165,49 @@ class NotificationManager {
           platformChannelSpecifics,
           payload: 'item x',
           androidAllowWhileIdle: true);
+    }
+  }
+
+  Future<void> _agendaNotificationPeriodo(
+      int hora, int minute, String dataRemedio, String nome, String pet) async {
+    if (hora != 0 && minute != 0 && dataRemedio != '' && pet != '') {
+      print(
+          "_agendaNotificationTeste: ${hora}:${minute}  ${dataRemedio}  ${nome}  ${pet}");
+
+      // Show a notification every minute with the first appearance happening a minute after invoking the method
+      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+          'repeating channel id',
+          'repeating channel name',
+          'repeating description');
+      var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+      var platformChannelSpecifics = NotificationDetails(
+          androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+      await _flutterLocalNotificationsPlugin.periodicallyShow(0, '${nome}',
+          ' ${pet}', RepeatInterval.EveryMinute, platformChannelSpecifics);
+    }
+  }
+
+  Future<void> _agenda(
+      int hora, int minute, String dataRemedio, String nome, String pet) async {
+    if (hora != 0 && minute != 0 && dataRemedio != '' && pet != '') {
+      print(
+          "_agenda: ${hora}:${minute}  ${dataRemedio}  ${nome}  ${pet}");
+
+      var scheduledNotificationDateTime =
+          DateTime.now().add(Duration(milliseconds: 150));
+      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+          'your other channel id',
+          'your other channel name',
+          'your other channel description');
+      var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+      NotificationDetails platformChannelSpecifics = NotificationDetails(
+          androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+      await _flutterLocalNotificationsPlugin.schedule(
+          0,
+          '_agenda ${nome}',
+          '_agenda ${pet}',
+          scheduledNotificationDateTime,
+          platformChannelSpecifics);
     }
   }
 

@@ -113,8 +113,10 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                     _selectedDate(remedioList[index].data);
                                     _selectedHora(remedioList[index].hora);
                                    // _showNotificationAgenda(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
-                                    _sheduleDailyNotifications(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
+                                   _sheduleDailyNotifications(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
+                                   //_showPeriodos(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
                                    // _showNotificationAgendaTeste(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
+                                   // _agenda(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
 
                                     return Card(
                                       key: Key(item.id.toString()),
@@ -373,6 +375,27 @@ class _RemedioScreenState extends State<RemedioScreen> {
     var newFormat = DateFormat("dd/MM/yyyy");
     String dateRemedioFinal = newFormat.format(parseDt);
       notificationManager.sheduleDailyNotifications(hora,miniute,dateRemedioFinal, nome, pet);
+
+  }
+  void _agenda(String horaRemedio, String dataRemedio, String nome, String pet){
+    int hora = int.parse(horaRemedio.substring(0,2));
+    int miniute = int.parse(horaRemedio.substring(3,5));
+    String strDt = dataRemedio;
+    DateTime parseDt = DateTime.parse(strDt);
+    var newFormat = DateFormat("dd/MM/yyyy");
+    String dateRemedioFinal = newFormat.format(parseDt);
+      notificationManager.agendaNT(hora,miniute,dateRemedioFinal, nome, pet);
+
+  }
+
+  void _showPeriodos(String horaRemedio, String dataRemedio, String nome, String pet){
+    int hora = int.parse(horaRemedio.substring(0,2));
+    int miniute = int.parse(horaRemedio.substring(3,5));
+    String strDt = dataRemedio;
+    DateTime parseDt = DateTime.parse(strDt);
+    var newFormat = DateFormat("dd/MM/yyyy");
+    String dateRemedioFinal = newFormat.format(parseDt);
+      notificationManager.showNotificationsAgendaPeriodo(hora,miniute,dateRemedioFinal, nome, pet);
 
   }
 

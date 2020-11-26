@@ -1,4 +1,7 @@
+import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/home/home_screens.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/services/pet_service.dart';
@@ -14,9 +17,7 @@ class FormPetScreen extends StatefulWidget {
 
 class _FormPetScreenState extends State<FormPetScreen> {
   Pet pet;
-
   PetService petService = PetService();
-
   String _corPet = 'Branco';
   String _sexoPet = 'Macho';
   Future<Pet> _loadPet;
@@ -25,27 +26,32 @@ class _FormPetScreenState extends State<FormPetScreen> {
   final _bioControler = TextEditingController();
   final _idadeControler = TextEditingController();
   final _descricaoControler = TextEditingController();
-
+  File _image;
+  final picker = ImagePicker();
+  final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
     super.initState();
-
     if (widget.id != -1) {
       _loadPet = _getPet(widget.id);
       _loadPet.then((value) => {
-            _nomeControler.text = value.nome,
-            _bioControler.text = value.bio,
-            _idadeControler.text = value.idade.toString(),
-            _descricaoControler.text = value.descricao,
-            _sexoPet = value.sexo,
-            _corPet = value.cor,
             pet = value,
+            print("pet: ${pet}"),
+            if (pet != null)
+              {
+                _nomeControler.text = value.nome,
+                _bioControler.text = value.bio,
+                _idadeControler.text = value.idade.toString(),
+                _descricaoControler.text = value.descricao,
+                _sexoPet = value.sexo,
+                _corPet = value.cor,
+              }
           });
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build2(BuildContext context) {
     Pet newPet;
     return Scaffold(
       appBar: AppBar(
@@ -166,7 +172,63 @@ class _FormPetScreenState extends State<FormPetScreen> {
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    TextEditingController _fotoController = TextEditingController();
+
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: ListView(
+          children: <Widget>[
+            Container(
+              height: 280.0,
+              color: Colors.redAccent,
+              child: Center(
+                child: _image == null
+                    ? Text('No image selected.')
+                    : Image.file(_image),
+              ),
+            ),
+            SizedBox(height: 10.0),
+            TextField(
+              controller: _fotoController,
+              decoration: InputDecoration(
+                  labelText: 'Nome da foto',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0))),
+            ),
+            SizedBox(height: 10.0),
+            RaisedButton(
+              child: Text('Salvar'),
+              onPressed: () {},
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add_a_photo),
+        onPressed: () {
+          getImage();
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+
   Future<Pet> _getPet(int id) async {
     return await petService.getPet(id);
+  }
+
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.camera);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
   }
 }

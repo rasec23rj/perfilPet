@@ -4,11 +4,13 @@ import 'package:path/path.dart' as path;
 class DbUtil {
   static Future<sql.Database> database() async {
     final dbPath = await sql.getDatabasesPath();
-//sql.deleteDatabase('pets.db');
+    //sql.deleteDatabase('pets.db');
+
     return sql.openDatabase(path.join(dbPath, 'pets.db'),
         onCreate: (db, version) {
       _createDb(db);
     }, version: 1);
+
   }
 
   static void _createDb(sql.Database db) async {
@@ -18,8 +20,9 @@ class DbUtil {
               idade INTEGER, sexo TEXT,
               cor TEXT, bio TEXT)
           ''');
+
     db.execute("""CREATE TABLE remedios (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-    nome TEXT, data DATETIME, hora TEXT, pet INTEGER,
+    nome TEXT, data DATETIME, hora TEXT, pet INTEGER, qtd_dias INTEGER, foto BLOB
     FOREIGN KEY (pet) REFERENCES pets (id_pet) ON DELETE NO ACTION 
     ON UPDATE NO ACTION)""");
   }
