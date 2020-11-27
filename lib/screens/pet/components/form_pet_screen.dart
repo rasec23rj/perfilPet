@@ -120,8 +120,8 @@ class _FormPetScreenState extends State<FormPetScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: 20, bottom: 20),
                   child: Container(
-                    height: 50.0,
-                    width: 150,
+                    height: 150.0,
+                    width: 350,
                     color: Colors.white,
                     child: Center(
                       child: _image == null

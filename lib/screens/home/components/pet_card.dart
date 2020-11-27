@@ -74,7 +74,7 @@ Widget petCard(BuildContext context, int index, Pet pets) {
       ),
       subtitle: Text(pets.bio),
       leading: pets.imageURL == null
-          ? AssetImage("assets/images/pet.png")
+          ? Image.asset('assets/images/pet.png')
           : Image.file(
               File(pets.imageURL),
             ),
