@@ -68,13 +68,16 @@ Widget petCard(BuildContext context, int index, Pet pets) {
 
   return Card(
     child: ListTile(
+      isThreeLine: true,
       title: Text(
         pets.nome,
       ),
       subtitle: Text(pets.bio),
       leading: pets.imageURL == null
-          ? Text('No image selected.')
-          : Image.file(File(pets.imageURL)),
+          ? AssetImage("assets/images/pet.png")
+          : Image.file(
+              File(pets.imageURL),
+            ),
       trailing: GestureDetector(
         child: Icon(
           Icons.delete,
