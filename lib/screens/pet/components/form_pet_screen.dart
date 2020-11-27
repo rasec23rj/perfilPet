@@ -26,6 +26,7 @@ class _FormPetScreenState extends State<FormPetScreen> {
   final _bioControler = TextEditingController();
   final _idadeControler = TextEditingController();
   final _descricaoControler = TextEditingController();
+  final _fotoController = TextEditingController();
   File _image;
   final picker = ImagePicker();
   final ImagePicker _picker = ImagePicker();
@@ -51,8 +52,9 @@ class _FormPetScreenState extends State<FormPetScreen> {
   }
 
   @override
-  Widget build2(BuildContext context) {
+  Widget build(BuildContext context) {
     Pet newPet;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(pet != null ? "Edição do Pet " : "Cadastro de Pet"),
@@ -118,6 +120,19 @@ class _FormPetScreenState extends State<FormPetScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: 20, bottom: 20),
                   child: Container(
+                    height: 50.0,
+                    width: 150,
+                    color: Colors.white,
+                    child: Center(
+                      child: _image == null
+                          ? Text('No image selected.')
+                          : Image.file(_image),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 20, bottom: 10),
+                  child: Container(
                     height: 40,
                     width: double.infinity,
                     child: RaisedButton(
@@ -128,7 +143,8 @@ class _FormPetScreenState extends State<FormPetScreen> {
                             idade: int.parse(_idadeControler.text),
                             sexo: _sexoPet,
                             descricao: _descricaoControler.text,
-                            cor: _corPet),
+                            cor: _corPet,
+                            imageURL: _fotoController.text),
                         //petService.addPet(newPet),
                         pet != null
                             ? petService.updatePet(pet.id_pet, newPet)
@@ -145,7 +161,7 @@ class _FormPetScreenState extends State<FormPetScreen> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  padding: EdgeInsets.only(top: 5, bottom: 10),
                   child: Container(
                     height: 40,
                     width: double.infinity,
@@ -169,11 +185,18 @@ class _FormPetScreenState extends State<FormPetScreen> {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add_a_photo),
+        onPressed: () {
+          getImage();
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build2(BuildContext context) {
     TextEditingController _fotoController = TextEditingController();
 
     return Scaffold(
@@ -183,7 +206,7 @@ class _FormPetScreenState extends State<FormPetScreen> {
           children: <Widget>[
             Container(
               height: 280.0,
-              color: Colors.redAccent,
+              color: Colors.white,
               child: Center(
                 child: _image == null
                     ? Text('No image selected.')
@@ -226,6 +249,7 @@ class _FormPetScreenState extends State<FormPetScreen> {
     setState(() {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
+        _fotoController.text = pickedFile.path;
       } else {
         print('No image selected.');
       }

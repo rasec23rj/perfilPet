@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/pet/components/form_pet_screen.dart';
@@ -49,6 +51,15 @@ class _PerfilPetScreenState extends State<PerfilPetScreen> {
                                 image: DecorationImage(
                                     image: AssetImage(pet.imageURL),
                                     fit: BoxFit.cover)),
+                            // child: Center(
+                            //   child: pet.imageURL == null
+                            //       ? Text('No image selected.')
+                            //       : Image.file(File(pet.imageURL)),
+                            // ),
+                            //   decoration: BoxDecoration(
+                            //       image: DecorationImage(
+                            //           image: AssetImage(pet.imageURL),
+                            //           fit: BoxFit.cover)),
                           ),
                         ),
                         Padding(
