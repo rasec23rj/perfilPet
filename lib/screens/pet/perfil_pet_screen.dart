@@ -55,8 +55,9 @@ class _PerfilPetScreenState extends State<PerfilPetScreen> {
                                   : Image.file(
                                       File(pet.imageURL),
                                       fit: BoxFit.fitWidth,
-                                      width: 450,
-                                      height: 250.0,
+                                      alignment: Alignment.center,
+                                      width: 500.0,
+                                      height: 350.0,
                                     ),
                             ),
                           ),

@@ -84,7 +84,13 @@ class _FormPetScreenState extends State<FormPetScreen> {
                           child: Center(
                             child: _image == null
                                 ? Text('No image selected.')
-                                : Image.file(_image),
+                                : Image.file(
+                                    File(pet.imageURL),
+                                    fit: BoxFit.fitWidth,
+                                    alignment: Alignment.center,
+                                    width: 500.0,
+                                    height: 350.0,
+                                  ),
                           ),
                         ),
                         Padding(
