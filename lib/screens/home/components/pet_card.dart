@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/screens/pet/perfil_pet_screen.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/screens/pet/perfil_pet_screen.dart';
-import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/remedio/remedio_screen.dart';
+import 'package:lifepet_app/screens/medicacao/medicao.dart';
 
 class CustomNavbar extends StatefulWidget {
   int paginaAberta;
@@ -57,14 +57,14 @@ class _CustomNavbarState extends State<CustomNavbar> {
               ),
             ),
             MaterialButton(
-              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
               onPressed: () {
                 setState(() {
                   widget.paginaAberta = 1;
                 });
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (_) => RemedioScreen(id: widget.pet.id_pet),
+                    builder: (_) => MedicacaoScreen(pet: widget.pet),
                   ),
                 );
               },
@@ -76,7 +76,7 @@ class _CustomNavbarState extends State<CustomNavbar> {
                     color: widget.paginaAberta == 1 ? Colors.red : Colors.grey,
                   ),
                   Text(
-                    "Remedio",
+                    "Medicações",
                     style: TextStyle(
                       color: widget.paginaAberta == 1
                           ? Colors.redAccent
@@ -87,7 +87,7 @@ class _CustomNavbarState extends State<CustomNavbar> {
               ),
             ),
             MaterialButton(
-              padding: EdgeInsets.fromLTRB(50.0, 0, 30, 0),
+              padding: EdgeInsets.fromLTRB(50.0, 0, 20, 0),
               onPressed: () {
                 setState(() {
                   widget.paginaAberta = 2;

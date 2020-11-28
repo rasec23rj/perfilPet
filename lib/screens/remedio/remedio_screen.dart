@@ -12,7 +12,7 @@ import 'package:intl/intl.dart';
 class RemedioScreen extends StatefulWidget {
   int id;
   int cor = 0;
-
+  Pet pet;
   var teste = TextDecoration.none;
   var textoButton = '"Concluir"';
   var iconButton = Icons.close;
@@ -24,7 +24,8 @@ class RemedioScreen extends StatefulWidget {
       this.teste,
       this.textoButton,
       this.iconButton,
-      this.corButton});
+      this.corButton,
+      this.pet});
 
   @override
   _RemedioScreenState createState() => _RemedioScreenState();
@@ -37,7 +38,6 @@ class _RemedioScreenState extends State<RemedioScreen> {
   final PetService petService = PetService();
   final RemedioService remedioService = RemedioService();
   List<Remedio> remedioList = [];
-  Pet pet;
   Future<Pet> _loadPet;
   Future<List> _loadRemedio;
   DateTime selectdDate = DateTime.now();
@@ -48,7 +48,7 @@ class _RemedioScreenState extends State<RemedioScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    print("id: ${widget.id}");
     _loadPet = _getPet(widget.id);
     _loadRemedio = _getRemedios(widget.id);
     notificationManager.initialuzeNotificatios();
@@ -60,11 +60,11 @@ class _RemedioScreenState extends State<RemedioScreen> {
         future: _loadPet,
         builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
           if (asyncSnapshot.hasData) {
-            pet = asyncSnapshot.data;
+            widget.pet = asyncSnapshot.data;
 
             return Scaffold(
               appBar: AppBar(
-                title: Text("Remédios do pet ${pet.nome}"),
+                title: Text("Remédios do(a) ${widget.pet.nome}"),
               ),
               body: Center(
                 child: Column(
@@ -102,7 +102,7 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                         remedioList[index].hora,
                                         remedioList[index].data,
                                         remedioList[index].nome,
-                                        pet.nome);
+                                        widget.pet.nome);
                                     return Card(
                                       key: Key(item.id.toString()),
                                       shadowColor:
@@ -176,7 +176,7 @@ class _RemedioScreenState extends State<RemedioScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => FormRemedioPetScreen(
-                        id: pet.id_pet,
+                        id: widget.pet.id_pet,
                       ),
                     ),
                   );
@@ -187,7 +187,7 @@ class _RemedioScreenState extends State<RemedioScreen> {
               floatingActionButtonLocation:
                   FloatingActionButtonLocation.centerDocked,
               bottomNavigationBar: CustomNavbar(
-                pet: pet,
+                pet: widget.pet,
                 paginaAberta: 1,
               ),
             );
