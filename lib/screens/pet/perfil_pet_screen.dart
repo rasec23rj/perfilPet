@@ -36,6 +36,9 @@ class _PerfilPetScreenState extends State<PerfilPetScreen> {
           if (snapshot.hasData) {
             pet = snapshot.data;
             return Scaffold(
+              appBar: AppBar(
+                title: Text("Perfil do ${pet.nome}"),
+              ),
               body: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,33 +48,19 @@ class _PerfilPetScreenState extends State<PerfilPetScreen> {
                         Hero(
                           tag: new Text('pet.id_pet'),
                           child: Container(
-                            width: double.infinity,
-                            height: 350,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(pet.imageURL),
-                                    fit: BoxFit.cover)),
-                            // child: Center(
-                            //   child: pet.imageURL == null
-                            //       ? Text('No image selected.')
-                            //       : Image.file(File(pet.imageURL)),
-                            // ),
-                            //   decoration: BoxDecoration(
-                            //       image: DecorationImage(
-                            //           image: AssetImage(pet.imageURL),
-                            //           fit: BoxFit.cover)),
+                            margin: EdgeInsets.all(10),
+                            child: Container(
+                              child: pet.imageURL == null
+                                  ? Text('No image selected.')
+                                  : Image.file(
+                                      File(pet.imageURL),
+                                      fit: BoxFit.fitWidth,
+                                      width: 450,
+                                      height: 250.0,
+                                    ),
+                            ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 40, left: 10),
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: Icon(Icons.arrow_back_ios),
-                            color: Colors.redAccent[700],
-                          ),
-                        )
                       ],
                     ),
 
@@ -149,7 +138,7 @@ class _PerfilPetScreenState extends State<PerfilPetScreen> {
                 backgroundColor: Colors.redAccent,
               ),
               floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
+                  FloatingActionButtonLocation.miniCenterDocked,
               floatingActionButtonAnimator:
                   FloatingActionButtonAnimator.scaling,
               bottomNavigationBar: CustomNavbar(

@@ -63,38 +63,26 @@ class _RemedioScreenState extends State<RemedioScreen> {
             pet = asyncSnapshot.data;
 
             return Scaffold(
+              appBar: AppBar(
+                title: Text("Remédios do pet ${pet.nome}"),
+              ),
               body: Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Stack(
-                      children: <Widget>[
-                        Hero(
-                          tag: pet.id_pet,
-                          child: Container(
-                            width: double.infinity,
-                            height: 350,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(pet.imageURL),
-                                    fit: BoxFit.cover)),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 40, left: 10),
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: Icon(Icons.arrow_back_ios),
-                            color: Colors.white,
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    // Stack(
+                    //   children: <Widget>[
+                    //     Padding(
+                    //       padding: EdgeInsets.only(top: 10, left: 10),
+                    //       child: IconButton(
+                    //         onPressed: () {
+                    //           Navigator.of(context).pop();
+                    //         },
+                    //         icon: Icon(Icons.arrow_back_ios),
+                    //         color: Colors.white,
+                    //       ),
+                    //     )
+                    //   ],
+                    // ),
                     FutureBuilder(
                         future: _loadRemedio,
                         builder: (BuildContext context,
@@ -110,16 +98,11 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                     final item = remedioList[index];
                                     _selectedDate(remedioList[index].data);
                                     _selectedHora(remedioList[index].hora);
-                                    // _showNotificationAgenda(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
                                     _sheduleDailyNotifications(
                                         remedioList[index].hora,
                                         remedioList[index].data,
                                         remedioList[index].nome,
                                         pet.nome);
-                                    //_showPeriodos(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
-                                    // _showNotificationAgendaTeste(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
-                                    // _agenda(remedioList[index].hora, remedioList[index].data, remedioList[index].nome, pet.nome);
-
                                     return Card(
                                       key: Key(item.id.toString()),
                                       shadowColor:
@@ -138,12 +121,7 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                                 flex: 2,
                                                 child: ListTile(
                                                   leading: Icon(Icons.healing,
-                                                      color: remedioList[index]
-                                                                      .id ==
-                                                                  index ||
-                                                              widget.cor == null
-                                                          ? Colors.red
-                                                          : Colors.green[900]),
+                                                      color: Colors.red),
                                                   title: Text(
                                                     remedioList[index].nome,
                                                     style: TextStyle(
@@ -154,13 +132,7 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                                         fontSize: 14,
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        color: widget.cor ==
-                                                                    0 ||
-                                                                widget.cor ==
-                                                                    null
-                                                            ? Colors.red
-                                                            : Colors
-                                                                .green[900]),
+                                                        color: Colors.red),
                                                   ),
                                                   subtitle: Text(
                                                     updatedDt =
@@ -171,65 +143,11 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                                         fontFamily:
                                                             "Montserrat",
                                                         fontSize: 12,
-                                                        color: widget.cor ==
-                                                                    0 ||
-                                                                widget.cor ==
-                                                                    null
-                                                            ? Colors.red
-                                                            : Colors
-                                                                .green[900]),
+                                                        color: Colors.red),
                                                     maxLines: 10,
                                                   ),
                                                 ),
                                               ),
-                                              Expanded(
-                                                flex: 1,
-                                                child: FlatButton.icon(
-                                                  minWidth: 10,
-                                                  textColor: Colors.black,
-                                                  color: widget.corButton ==
-                                                              0 ||
-                                                          widget.corButton ==
-                                                              null
-                                                      ? Colors.amber[200]
-                                                      : Colors.greenAccent[400],
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      if (item.id.toString() ==
-                                                          item.id.toString()) {
-                                                        print(
-                                                            "item.id.toString() ${item.id.toString()}");
-                                                        if (item.id
-                                                                .toString() ==
-                                                            item.id
-                                                                .toString()) {
-                                                          widget.corButton ==
-                                                                      0 ||
-                                                                  widget.corButton ==
-                                                                      null
-                                                              ? widget
-                                                                  .corButton = 1
-                                                              : widget
-                                                                  .corButton = 0;
-                                                        }
-                                                      }
-                                                    });
-                                                  },
-                                                  icon: Icon(
-                                                    widget.corButton == 1
-                                                        ? widget.iconButton =
-                                                            Icons.check_circle
-                                                        : widget.iconButton =
-                                                            Icons.close,
-                                                    size: 15,
-                                                  ),
-                                                  label: Text(widget
-                                                              .textoButton ==
-                                                          null
-                                                      ? 'Concluir'
-                                                      : '${widget.textoButton}'),
-                                                ),
-                                              )
                                             ],
                                           ),
                                         ],
@@ -320,14 +238,7 @@ class _RemedioScreenState extends State<RemedioScreen> {
     String dateRemedioTeste = newFormat.format(parseDt);
     String dateRemedioNow = newFormat.format(now);
 
-    print("horaNow: ${horaNow}");
-    print("horaFinal: ${horaFinal}");
-    print("dateRemedioTeste: ${dateRemedioTeste}");
-    print("dateRemedioNow: ${dateRemedioNow}");
-
-    if (horaNow == horaFinal && dateRemedioTeste == dateRemedioNow) {
-      print("horaFinal if: ${horaFinal}");
-    }
+    if (horaNow == horaFinal && dateRemedioTeste == dateRemedioNow) {}
     if (dataRemedio != null) {
       notificationManager.showNotificationsAgenda(
           hora, miniute, dataRemedio, nome, pet);

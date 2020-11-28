@@ -23,10 +23,10 @@ class _CustomNavbarState extends State<CustomNavbar> {
       child: Container(
         height: 45,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             MaterialButton(
-              minWidth: 35,
+              padding: EdgeInsets.fromLTRB(10, 0, 20, 0),
               onPressed: () {
                 setState(() {
                   print(widget.paginaAberta);
@@ -57,7 +57,7 @@ class _CustomNavbarState extends State<CustomNavbar> {
               ),
             ),
             MaterialButton(
-              minWidth: 40,
+              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
               onPressed: () {
                 setState(() {
                   widget.paginaAberta = 1;
@@ -69,7 +69,7 @@ class _CustomNavbarState extends State<CustomNavbar> {
                 );
               },
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Icon(
                     Icons.healing,
@@ -87,14 +87,14 @@ class _CustomNavbarState extends State<CustomNavbar> {
               ),
             ),
             MaterialButton(
-              minWidth: 35,
+              padding: EdgeInsets.fromLTRB(50.0, 0, 30, 0),
               onPressed: () {
                 setState(() {
                   widget.paginaAberta = 2;
                 });
               },
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Icon(
                     Icons.local_hospital,
@@ -112,7 +112,7 @@ class _CustomNavbarState extends State<CustomNavbar> {
               ),
             ),
             MaterialButton(
-              minWidth: 25,
+              padding: EdgeInsets.fromLTRB(0.0, 0, 0, 0),
               onPressed: () {
                 setState(() {
                   widget.paginaAberta = 3;

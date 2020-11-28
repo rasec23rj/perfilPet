@@ -56,6 +56,7 @@ class NotificationManager {
       int hora, int minute, String dataRemedio, String nome, String pet) {
     _agendaNotification(hora, minute, dataRemedio, nome, pet);
   }
+
   void agendaNT(
       int hora, int minute, String dataRemedio, String nome, String pet) {
     _agenda(hora, minute, dataRemedio, nome, pet);
@@ -91,8 +92,6 @@ class NotificationManager {
       int hora, int minute, String dataRemedio, String nome, String pet) async {
     var time = Time(hora, minute, 0);
     if (hora != 0 && minute != 0 && dataRemedio != '' && pet != '') {
-      print(
-          "_agendaNotificationTeste: ${hora}:${minute}  ${dataRemedio}  ${nome}  ${pet}");
       var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
           "repeatDailyAtTime channel test123",
           "repeatDailyAtTime channel test123",
@@ -125,7 +124,7 @@ class NotificationManager {
       int hora, int minute, String dataRemedio, String nome, String pet) async {
     var time = Time(17, 45, 0);
     final List semana = ['segunda', 'terça'];
-    print("time: ${time.hour}:${time.minute}:${time.second}");
+
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'show weekly channel id',
         'show weekly channel name',
@@ -145,9 +144,6 @@ class NotificationManager {
   Future<void> _agendaNotificationTeste(
       int hora, int minute, String dataRemedio, String nome, String pet) async {
     if (hora != 0 && minute != 0 && dataRemedio != '' && pet != '') {
-      print(
-          "_agendaNotificationTeste: ${hora}:${minute}  ${dataRemedio}  ${nome}  ${pet}");
-
       var scheduledNotificationDateTime =
           DateTime.now().add(Duration(hours: 1));
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
@@ -171,9 +167,6 @@ class NotificationManager {
   Future<void> _agendaNotificationPeriodo(
       int hora, int minute, String dataRemedio, String nome, String pet) async {
     if (hora != 0 && minute != 0 && dataRemedio != '' && pet != '') {
-      print(
-          "_agendaNotificationTeste: ${hora}:${minute}  ${dataRemedio}  ${nome}  ${pet}");
-
       // Show a notification every minute with the first appearance happening a minute after invoking the method
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(
           'repeating channel id',
@@ -190,9 +183,6 @@ class NotificationManager {
   Future<void> _agenda(
       int hora, int minute, String dataRemedio, String nome, String pet) async {
     if (hora != 0 && minute != 0 && dataRemedio != '' && pet != '') {
-      print(
-          "_agenda: ${hora}:${minute}  ${dataRemedio}  ${nome}  ${pet}");
-
       var scheduledNotificationDateTime =
           DateTime.now().add(Duration(milliseconds: 150));
       var androidPlatformChannelSpecifics = AndroidNotificationDetails(

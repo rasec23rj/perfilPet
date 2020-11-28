@@ -28,7 +28,7 @@ class _FormRemedioPetScreenState extends State<FormRemedioPetScreen> {
   Future<Remedio> _loadremedio;
   Future<Pet> _loadPet;
   DateTime _selectdDate = DateTime.now();
-  TimeOfDay _selectdTime = new  TimeOfDay.now();
+  TimeOfDay _selectdTime = new TimeOfDay.now();
   String timerFinal;
 
   @override
@@ -67,8 +67,8 @@ class _FormRemedioPetScreenState extends State<FormRemedioPetScreen> {
                         child: TextFormField(
                           controller: _dataControler,
                           keyboardType: TextInputType.datetime,
-                          decoration:
-                              InputDecoration(labelText: _selectdDate.toString()),
+                          decoration: InputDecoration(
+                              labelText: _selectdDate.toString()),
                         ),
                       ),
                     ),
@@ -89,13 +89,12 @@ class _FormRemedioPetScreenState extends State<FormRemedioPetScreen> {
                         height: 40,
                         child: RaisedButton(
                           onPressed: () {
-
                             Remedio novoRemedio = Remedio(
                                 nome: _nomeControler.text,
                                 data: _selectdDate.toString(),
                                 hora: timerFinal.toString(),
                                 pet: pet.id_pet);
-                            print("remedios save: ${novoRemedio}");
+
                             remedioService.addRemedio(novoRemedio);
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
@@ -139,27 +138,29 @@ class _FormRemedioPetScreenState extends State<FormRemedioPetScreen> {
         initialDate: _selectdDate,
         firstDate: DateTime(1990, 1),
         lastDate: DateTime(2050));
-    if(dataSelecionada != null && dataSelecionada != _selectdDate){
+    if (dataSelecionada != null && dataSelecionada != _selectdDate) {
       setState(() {
         _selectdDate = dataSelecionada;
       });
     }
   }
+
   Future<Null> _selectedTime(BuildContext context) async {
-    final TimeOfDay _times = await showTimePicker(context: context, initialTime: _selectdTime);
+    final TimeOfDay _times =
+        await showTimePicker(context: context, initialTime: _selectdTime);
     final String str = _times.toString();
     final String start = "TimeOfDay(";
     final String end = ")";
 
     final startIndex = str.indexOf(start);
     final endIndex = str.indexOf(end, startIndex + start.length);
-    final String _timesFinal =  str.substring(startIndex + start.length, endIndex);
+    final String _timesFinal =
+        str.substring(startIndex + start.length, endIndex);
 
-    if(_times != _selectdTime && _times != null){
-    setState(() {
-      timerFinal= _timesFinal;
-    });
-
+    if (_times != _selectdTime && _times != null) {
+      setState(() {
+        timerFinal = _timesFinal;
+      });
     }
   }
 }

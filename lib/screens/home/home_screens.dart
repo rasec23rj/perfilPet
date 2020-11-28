@@ -20,7 +20,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -29,11 +28,13 @@ class _HomeScreenState extends State<HomeScreen> {
         if (snapshot.hasData) {
           pets = snapshot.data;
           return Scaffold(
+            appBar: AppBar(
+              title: const Text('Life pet'),
+            ),
             backgroundColor: Colors.white,
             body: ListView.builder(
               itemCount: pets.length,
               itemBuilder: (context, index) {
-
                 return petCard(context, index, pets[index]);
               },
             ),
@@ -51,8 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundColor: Colors.redAccent,
             ),
           );
-        }
-        else{
+        } else {
           return Center(
             child: CircularProgressIndicator(),
           );

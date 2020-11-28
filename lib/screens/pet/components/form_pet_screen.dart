@@ -32,12 +32,10 @@ class _FormPetScreenState extends State<FormPetScreen> {
   final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
-    super.initState();
     if (widget.id != -1) {
       _loadPet = _getPet(widget.id);
       _loadPet.then((value) => {
             pet = value,
-            print("pet: ${pet}"),
             if (pet != null)
               {
                 _nomeControler.text = value.nome,
@@ -46,9 +44,18 @@ class _FormPetScreenState extends State<FormPetScreen> {
                 _descricaoControler.text = value.descricao,
                 _sexoPet = value.sexo,
                 _corPet = value.cor,
+                _image = File(value.imageURL),
+                setImagem(value.imageURL)
               }
           });
     }
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -66,6 +73,33 @@ class _FormPetScreenState extends State<FormPetScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(top: 20, bottom: 20),
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(top: 5, bottom: 10),
+                          child: Center(
+                            child: _image == null
+                                ? Text('No image selected.')
+                                : Image.file(_image),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 20, bottom: 10),
+                          child: IconButton(
+                            onPressed: () {
+                              getImage();
+                            },
+                            icon: Icon(Icons.camera_alt),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 TextFormField(
                   controller: _nomeControler,
                   keyboardType: TextInputType.text,
@@ -116,19 +150,6 @@ class _FormPetScreenState extends State<FormPetScreen> {
                       child: Text(value),
                     );
                   }).toList(),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 20, bottom: 20),
-                  child: Container(
-                    height: 150.0,
-                    width: 350,
-                    color: Colors.white,
-                    child: Center(
-                      child: _image == null
-                          ? Text('No image selected.')
-                          : Image.file(_image),
-                    ),
-                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20, bottom: 10),
@@ -185,57 +206,6 @@ class _FormPetScreenState extends State<FormPetScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add_a_photo),
-        onPressed: () {
-          getImage();
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-    );
-  }
-
-  @override
-  Widget build2(BuildContext context) {
-    TextEditingController _fotoController = TextEditingController();
-
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: ListView(
-          children: <Widget>[
-            Container(
-              height: 280.0,
-              color: Colors.white,
-              child: Center(
-                child: _image == null
-                    ? Text('No image selected.')
-                    : Image.file(_image),
-              ),
-            ),
-            SizedBox(height: 10.0),
-            TextField(
-              controller: _fotoController,
-              decoration: InputDecoration(
-                  labelText: 'Nome da foto',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.0))),
-            ),
-            SizedBox(height: 10.0),
-            RaisedButton(
-              child: Text('Salvar'),
-              onPressed: () {},
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add_a_photo),
-        onPressed: () {
-          getImage();
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -250,6 +220,18 @@ class _FormPetScreenState extends State<FormPetScreen> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
         _fotoController.text = pickedFile.path;
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  void setImagem(String imagem) {
+    _image = File(imagem);
+    setState(() {
+      if (_image != null) {
+        _image = File(_image.path);
+        _fotoController.text = _image.path;
       } else {
         print('No image selected.');
       }
