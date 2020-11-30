@@ -7,6 +7,8 @@ import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/remedi
 import 'package:lifepet_app/services/pet_service.dart';
 import 'package:lifepet_app/services/remedio_service.dart';
 import 'package:lifepet_app/components/custom_navbar.dart';
+import 'package:lifepet_app/components/navbar_remedio.dart';
+import 'package:lifepet_app/screens/remedio/components/detalhe_remedio.dart';
 import 'package:intl/intl.dart';
 
 class RemedioScreen extends StatefulWidget {
@@ -18,14 +20,7 @@ class RemedioScreen extends StatefulWidget {
   var iconButton = Icons.close;
   var corButton = 0;
 
-  RemedioScreen(
-      {this.id,
-      this.cor,
-      this.teste,
-      this.textoButton,
-      this.iconButton,
-      this.corButton,
-      this.pet});
+  RemedioScreen({this.id, this.pet});
 
   @override
   _RemedioScreenState createState() => _RemedioScreenState();
@@ -69,20 +64,6 @@ class _RemedioScreenState extends State<RemedioScreen> {
               body: Center(
                 child: Column(
                   children: <Widget>[
-                    // Stack(
-                    //   children: <Widget>[
-                    //     Padding(
-                    //       padding: EdgeInsets.only(top: 10, left: 10),
-                    //       child: IconButton(
-                    //         onPressed: () {
-                    //           Navigator.of(context).pop();
-                    //         },
-                    //         icon: Icon(Icons.arrow_back_ios),
-                    //         color: Colors.white,
-                    //       ),
-                    //     )
-                    //   ],
-                    // ),
                     FutureBuilder(
                         future: _loadRemedio,
                         builder: (BuildContext context,
@@ -96,11 +77,13 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                   itemCount: remedioList.length,
                                   itemBuilder: (context, index) {
                                     final item = remedioList[index];
-                                    _selectedDate(remedioList[index].data);
+                                    print("remedios: ${item.nome}");
+                                    _selectedDate(
+                                        remedioList[index].inicioData);
                                     _selectedHora(remedioList[index].hora);
                                     _sheduleDailyNotifications(
                                         remedioList[index].hora,
-                                        remedioList[index].data,
+                                        remedioList[index].inicioData,
                                         remedioList[index].nome,
                                         widget.pet.nome);
                                     return Card(
@@ -146,6 +129,19 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                                         color: Colors.red),
                                                     maxLines: 10,
                                                   ),
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              DetalheRemedioScreen(
+                                                                  id: remedioList[
+                                                                          index]
+                                                                      .id,
+                                                                  pet: widget
+                                                                      .pet)),
+                                                    );
+                                                  },
                                                 ),
                                               ),
                                             ],
@@ -184,12 +180,12 @@ class _RemedioScreenState extends State<RemedioScreen> {
                 child: Icon(Icons.add),
                 backgroundColor: Colors.redAccent,
               ),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
-              bottomNavigationBar: CustomNavbar(
-                pet: widget.pet,
-                paginaAberta: 1,
-              ),
+              // floatingActionButtonLocation:
+              //     FloatingActionButtonLocation.centerDocked,
+              // bottomNavigationBar: NavNarRemedio(
+              //   pet: widget.pet,
+              //   paginaAberta: 1,
+              // ),
             );
           } else {
             return Center(

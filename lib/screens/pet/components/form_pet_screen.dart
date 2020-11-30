@@ -83,9 +83,11 @@ class _FormPetScreenState extends State<FormPetScreen> {
                           padding: EdgeInsets.only(top: 5, bottom: 10),
                           child: Center(
                             child: _image == null
-                                ? Text('No image selected.')
+                                ? Text('sem imagem')
                                 : Image.file(
-                                    File(pet.imageURL),
+                                    _image != null
+                                        ? _image
+                                        : File(pet.imageURL),
                                     fit: BoxFit.fitWidth,
                                     alignment: Alignment.center,
                                     width: 500.0,
@@ -226,6 +228,7 @@ class _FormPetScreenState extends State<FormPetScreen> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
         _fotoController.text = pickedFile.path;
+        print('image selected: ${_image}');
       } else {
         print('No image selected.');
       }

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/models/remedio_model.dart';
 import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/remedio/remedio_screen.dart';
@@ -19,16 +20,21 @@ class FormRemedioPetScreen extends StatefulWidget {
 
 class _FormRemedioPetScreenState extends State<FormRemedioPetScreen> {
   final _nomeControler = TextEditingController();
-  final _dataControler = TextEditingController();
+  final _inicioDataControler = TextEditingController();
+  final _fimDataControler = TextEditingController();
   final _timeControler = TextEditingController();
+  final _descricaoControler = TextEditingController();
   final PetService petService = PetService();
   final RemedioService remedioService = RemedioService();
 
   Pet pet;
   Future<Remedio> _loadremedio;
   Future<Pet> _loadPet;
-  DateTime _selectdDate = DateTime.now();
+  DateTime _selectdDateInicio = DateTime.now();
+  DateTime _selectdDateFim = DateTime.now();
   TimeOfDay _selectdTime = new TimeOfDay.now();
+  DateTime _dateInicio;
+  DateTime _dateFim;
   String timerFinal;
 
   @override
@@ -62,13 +68,24 @@ class _FormRemedioPetScreenState extends State<FormRemedioPetScreen> {
                       decoration: InputDecoration(labelText: "Nome do remédio"),
                     ),
                     GestureDetector(
-                      onTap: () => _selectedDate(context),
+                      onTap: () => _selectedDateInicio(context),
                       child: AbsorbPointer(
                         child: TextFormField(
-                          controller: _dataControler,
+                          controller: _inicioDataControler,
                           keyboardType: TextInputType.datetime,
                           decoration: InputDecoration(
-                              labelText: _selectdDate.toString()),
+                              labelText: _selectdDateInicio.toString()),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => _selectedDateFim(context),
+                      child: AbsorbPointer(
+                        child: TextFormField(
+                          controller: _fimDataControler,
+                          keyboardType: TextInputType.datetime,
+                          decoration: InputDecoration(
+                              labelText: _selectdDateFim.toString()),
                         ),
                       ),
                     ),
@@ -83,6 +100,12 @@ class _FormRemedioPetScreenState extends State<FormRemedioPetScreen> {
                         ),
                       ),
                     ),
+                    TextFormField(
+                      controller: _descricaoControler,
+                      keyboardType: TextInputType.text,
+                      decoration:
+                          InputDecoration(labelText: "Descrição do remédio"),
+                    ),
                     Padding(
                       padding: EdgeInsets.only(top: 20, bottom: 20),
                       child: Container(
@@ -91,7 +114,9 @@ class _FormRemedioPetScreenState extends State<FormRemedioPetScreen> {
                           onPressed: () {
                             Remedio novoRemedio = Remedio(
                                 nome: _nomeControler.text,
-                                data: _selectdDate.toString(),
+                                inicioData: _selectdDateInicio.toString(),
+                                fimData: _selectdDateFim.toString(),
+                                descricao: _descricaoControler.text,
                                 hora: timerFinal.toString(),
                                 pet: pet.id_pet);
 
@@ -132,15 +157,30 @@ class _FormRemedioPetScreenState extends State<FormRemedioPetScreen> {
     return await petService.getPet(id);
   }
 
-  Future<void> _selectedDate(BuildContext context) async {
-    final DateTime dataSelecionada = await showDatePicker(
+  Future<void> _selectedDateInicio(BuildContext context) async {
+    final DateTime dataSelecionadaIncio = await showDatePicker(
         context: context,
-        initialDate: _selectdDate,
+        initialDate: _selectdDateInicio,
         firstDate: DateTime(1990, 1),
         lastDate: DateTime(2050));
-    if (dataSelecionada != null && dataSelecionada != _selectdDate) {
+    if (dataSelecionadaIncio != null &&
+        dataSelecionadaIncio != _selectdDateInicio) {
       setState(() {
-        _selectdDate = dataSelecionada;
+        _selectdDateInicio = dataSelecionadaIncio;
+      });
+    }
+  }
+
+  Future<void> _selectedDateFim(BuildContext context) async {
+    final DateTime dataSelecionada = await showDatePicker(
+        context: context,
+        initialDate: _selectdDateFim,
+        firstDate: DateTime(1990, 1),
+        lastDate: DateTime(2050));
+
+    if (dataSelecionada != null && dataSelecionada != _selectdDateFim) {
+      setState(() {
+        _selectdDateFim = dataSelecionada;
       });
     }
   }

@@ -3,16 +3,16 @@ import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/screens/pet/perfil_pet_screen.dart';
 import 'package:lifepet_app/screens/medicacao/medicao.dart';
 
-class CustomNavbar extends StatefulWidget {
+class NavNarRemedio extends StatefulWidget {
   int paginaAberta;
   final Pet pet;
-  CustomNavbar({this.pet, this.paginaAberta});
+  NavNarRemedio({this.pet, this.paginaAberta});
 
   @override
-  _CustomNavbarState createState() => _CustomNavbarState();
+  _NavNarRemedioState createState() => _NavNarRemedioState();
 }
 
-class _CustomNavbarState extends State<CustomNavbar> {
+class _NavNarRemedioState extends State<NavNarRemedio> {
   Widget paginaAtual;
 
   @override
@@ -42,11 +42,11 @@ class _CustomNavbarState extends State<CustomNavbar> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Icon(
-                    Icons.account_circle,
+                    Icons.analytics,
                     color: widget.paginaAberta == 0 ? Colors.red : Colors.grey,
                   ),
                   Text(
-                    "Perfil",
+                    "Receita",
                     style: TextStyle(
                       color: widget.paginaAberta == 0
                           ? Colors.redAccent

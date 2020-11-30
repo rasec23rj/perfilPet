@@ -29,6 +29,7 @@ dependencies:
   notification_permissions: ^0.4.4
   path_provider: ^1.6.24
   image_picker: ^0.6.7+6
+ 
   
 
 

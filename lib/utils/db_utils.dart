@@ -10,7 +10,6 @@ class DbUtil {
         onCreate: (db, version) {
       _createDb(db);
     }, version: 1);
-
   }
 
   static void _createDb(sql.Database db) async {
@@ -22,8 +21,37 @@ class DbUtil {
           ''');
 
     db.execute("""CREATE TABLE remedios (id INTEGER PRIMARY KEY AUTOINCREMENT, 
-    nome TEXT, data DATETIME, hora TEXT, pet INTEGER, qtd_dias INTEGER, foto BLOB
+    nome TEXT, inicioData DATETIME, fimData DATETIME, hora TEXT, descricao TEXT, pet INTEGER,
     FOREIGN KEY (pet) REFERENCES pets (id_pet) ON DELETE NO ACTION 
+    ON UPDATE NO ACTION)""");
+
+    db.execute("""CREATE TABLE vacinas (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    nome TEXT, inicioData DATETIME, fimData DATETIME,  hora TEXT, pet INTEGER,
+     FOREIGN KEY (pet) REFERENCES pets (id_pet) ON DELETE NO ACTION 
+    ON UPDATE NO ACTION)""");
+
+    db.execute(
+        """CREATE TABLE vermifugos (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    nome TEXT, inicioData DATETIME, fimData DATETIME,  hora TEXT, pet INTEGER,
+     FOREIGN KEY (pet) REFERENCES pets (id_pet) ON DELETE NO ACTION 
+    ON UPDATE NO ACTION)""");
+
+    db.execute(
+        """CREATE TABLE fotosRemedios (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    nome TEXT,  remedios  INTEGER,
+     FOREIGN KEY (remedios) REFERENCES remedios (id) ON DELETE NO ACTION 
+    ON UPDATE NO ACTION)""");
+
+    db.execute(
+        """CREATE TABLE fotosVacinas (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    nome TEXT,  remedios  INTEGER,
+     FOREIGN KEY (remedios) REFERENCES remedios (id) ON DELETE NO ACTION 
+    ON UPDATE NO ACTION)""");
+
+    db.execute(
+        """CREATE TABLE fotosVermifugos (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    nome TEXT,  remedios  INTEGER,
+     FOREIGN KEY (remedios) REFERENCES remedios (id) ON DELETE NO ACTION 
     ON UPDATE NO ACTION)""");
   }
 
@@ -50,6 +78,17 @@ class DbUtil {
       String table,
       List<String> colunas,
       String whereString,
+      List<dynamic> whereArgumento) async {
+    final db = await database();
+    return db.query(table,
+        columns: colunas, where: whereString, whereArgs: whereArgumento);
+  }
+
+  static Future<List<Map<String, dynamic>>> getDataDetalheWhere(
+      String table,
+      List<String> colunas,
+      String whereString,
+      String join,
       List<dynamic> whereArgumento) async {
     final db = await database();
     return db.query(table,
