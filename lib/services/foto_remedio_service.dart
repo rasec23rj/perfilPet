@@ -1,0 +1,46 @@
+import 'package:lifepet_app/models/foto_remedio.dart';
+import 'package:lifepet_app/utils/db_utils.dart';
+
+class FotoRemedioService {
+  List<String> colunas = ["id", "nome", "remedios"];
+
+  Future<List> getFotoRemedio(int id) async {
+    String whereString = "remedios = ?";
+    List<dynamic> whereArgumento = [id];
+    final dataList = await DbUtil.getDataWhere(
+        "fotosRemedios", colunas, whereString, whereArgumento);
+    print("id_remedio: ${dataList}");
+    return dataList
+        .map((fotosRemedios) => FotoRemedio.fromMap(fotosRemedios))
+        .toList();
+  }
+
+  void addFotoRemedio(FotoRemedio fotosRemedios) {
+    DbUtil.insertData("fotosRemedios", fotosRemedios.toMap());
+  }
+
+  Future<FotoRemedio> updateRemedio(int id, FotoRemedio fotoRemedio) async {
+    String whereString = "id = ?";
+    List<dynamic> whereArgumento = [id];
+
+    DbUtil.updteData(
+        "fotosRemedios", fotoRemedio.toMap(), whereString, whereArgumento);
+  }
+
+  Future<FotoRemedio> getFotoRemedioFist(int id) async {
+    String whereString = "remedios = ?";
+    List<dynamic> whereArgumento = [id];
+    final dataList = await DbUtil.getDataWhere(
+        "fotosRemedios", colunas, whereString, whereArgumento);
+    return FotoRemedio.fromMap(dataList.first);
+  }
+
+  Future<FotoRemedio> getDetalheRemedio(int id) async {
+    String whereString = "id = ?";
+    List<dynamic> whereArgumento = [id];
+    final dataList = await DbUtil.getDataWhere(
+        "fotosRemedios", colunas, whereString, whereArgumento);
+
+    return FotoRemedio.fromMap(dataList.first);
+  }
+}
