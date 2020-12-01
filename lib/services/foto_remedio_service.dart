@@ -1,5 +1,9 @@
+import 'dart:wasm';
+
 import 'package:lifepet_app/models/foto_remedio.dart';
 import 'package:lifepet_app/utils/db_utils.dart';
+import 'package:sqflite/sqflite.dart' as sql;
+import 'package:path/path.dart' as path;
 
 class FotoRemedioService {
   List<String> colunas = ["id", "nome", "remedios"];
@@ -9,7 +13,7 @@ class FotoRemedioService {
     List<dynamic> whereArgumento = [id];
     final dataList = await DbUtil.getDataWhere(
         "fotosRemedios", colunas, whereString, whereArgumento);
-    print("id_remedio: ${dataList}");
+
     return dataList
         .map((fotosRemedios) => FotoRemedio.fromMap(fotosRemedios))
         .toList();
@@ -42,5 +46,16 @@ class FotoRemedioService {
         "fotosRemedios", colunas, whereString, whereArgumento);
 
     return FotoRemedio.fromMap(dataList.first);
+  }
+
+  Future<List> getDatabase(int id) async {
+    var db = await sql.openDatabase('pets.db');
+    List<Map> list = await db.rawQuery(
+        'SELECT fotosRemedios.nome as foto, remedios.nome, remedios.id, remedios.descricao, remedios.hora, remedios.inicioData, remedios.fimData ' +
+            'FROM fotosRemedios inner join remedios  on fotosRemedios.remedios = remedios.id where fotosRemedios.remedios = ${id}');
+    print("getDatabase: ${list}");
+    return list
+        .map((fotosRemedios) => FotoRemedio.fromMap(fotosRemedios))
+        .toList();
   }
 }

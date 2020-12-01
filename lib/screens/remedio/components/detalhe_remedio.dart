@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lifepet_app/models/foto_remedio.dart';
@@ -20,22 +21,18 @@ class DetalheRemedioScreen extends StatefulWidget {
 }
 
 class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
-  final _nomeControler = TextEditingController();
-  final _dataControler = TextEditingController();
-  final _timeControler = TextEditingController();
   final PetService petService = PetService();
   final RemedioService remedioService = RemedioService();
   FotoRemedioService fotoRemedioService = FotoRemedioService();
   String nomePet;
   Remedio remedios;
-
-  List<FotoRemedio> fotoRemedio = [];
+  FotoRemedio fotoRemedio;
+  List<FotoRemedio> remedioList = [];
   Future<Remedio> _loadremedio;
   Future<List> _loadFotoRemedio;
   String updatedDtIncio;
   String updatedDtFim;
-
-  List<FotoRemedio> fotoRemedios = List();
+  File _image;
 
   @override
   void initState() {
@@ -43,6 +40,7 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
     super.initState();
     _loadremedio = _getRemedios(widget.id);
     _loadFotoRemedio = _getFotoRemedios(widget.id);
+
     nomePet = widget.pet.nome;
   }
 
@@ -52,52 +50,104 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
       future: _loadremedio,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         remedios = snapshot.data;
-
+        _selectedDate(remedios.inicioData, remedios.fimData);
         if (snapshot.hasData) {
-          _selectedDate(remedios.inicioData, remedios.fimData);
-
           return Scaffold(
             appBar: AppBar(
               title: Text("Remédio do(a):  ${nomePet}"),
             ),
-            body: ListView(
-              children: <Widget>[
-                Flexible(
-                    flex: 1,
-                    child: Container(
-                        padding: EdgeInsets.all(10),
-                        child: Card(
-                          color: Colors.white,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              ListTile(
-                                leading: Icon(
-                                  Icons.healing,
-                                  size: 50,
+            body: Center(
+              child: Column(
+                children: <Widget>[
+                  Flexible(
+                      flex: 1,
+                      child: Container(
+                          padding: EdgeInsets.all(10),
+                          child: Card(
+                            color: Colors.white,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ListTile(
+                                  leading: Icon(
+                                    Icons.healing,
+                                    size: 50,
+                                  ),
+                                  title: Text('Nome: ${remedios.nome}'),
+                                  subtitle: Text(
+                                      'Incio: ${updatedDtIncio} \t\r\n Fim: ${updatedDtIncio}\t\r\n Hora: ${remedios.hora}\t\r\n Descrição: ${remedios.descricao}'),
                                 ),
-                                title: Text('Nome: ${remedios.nome}'),
-                                subtitle: Text(
-                                    'Incio: ${updatedDtIncio} \t\r\n Fim: ${updatedDtIncio}\t\r\n Hora: ${remedios.hora}\t\r\n Descrição: ${remedios.descricao}'),
-                              ),
-                            ],
-                          ),
-                        ))),
-                Flexible(
-                    flex: 3,
+                              ],
+                            ),
+                          ))),
+                  Flexible(
+                    flex: 2,
                     child: Container(
-                      child: Text('czxczxczxczxcxz'),
-                    )),
-              ],
+                      height: 450.0,
+                      padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                      child: FutureBuilder(
+                          future: _loadFotoRemedio,
+                          builder: (BuildContext context,
+                              AsyncSnapshot asyncSnapshot) {
+                            if (asyncSnapshot.hasData) {
+                              remedioList = asyncSnapshot.data;
+                              final orientation =
+                                  MediaQuery.of(context).orientation;
+                              return Expanded(
+                                child: GridView.builder(
+                                    itemCount: remedioList.length,
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: (orientation ==
+                                                    Orientation.portrait)
+                                                ? 2
+                                                : 3),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      final item = remedioList[index];
+                                      return Wrap(
+                                        spacing:
+                                            8.0, // gap between adjacent chips
+                                        runSpacing: 4.0, // gap between lines
+                                        children: <Widget>[
+                                          item.nome == null
+                                              ? Text('No image selected.')
+                                              : Image.file(
+                                                  File(item.nome),
+                                                  fit: BoxFit.fitWidth,
+                                                  alignment: Alignment.center,
+                                                  width: 150.0,
+                                                  height: 150.0,
+                                                ),
+                                        ],
+                                      );
+                                    }),
+                              );
+                            } else if (asyncSnapshot.hasError) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              );
+                            } else {
+                              return Center(
+                                child: Text("Este pet não possui remédios"),
+                              );
+                            }
+                          }),
+                    ),
+                  ),
+                ],
+              ),
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => FormFotoRemedioScreen(
-                      id: remedios.id,
-                    ),
+                    builder: (context) =>
+                        FormFotoRemedioScreen(id: remedios.id, pet: widget.pet),
                   ),
                 );
               },

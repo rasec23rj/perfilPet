@@ -20,10 +20,8 @@ class RemedioService {
   Future<List> getRemedioPets(int id) async {
     String whereString = "pet = ?";
     List<dynamic> whereArgumento = [id];
-
     final dataList = await DbUtil.getDataWhere(
         "remedios", colunas, whereString, whereArgumento);
-    print("remedios_pets: ${dataList.first}");
     return dataList.map((remedios) => Remedio.fromMap(remedios)).toList();
   }
 

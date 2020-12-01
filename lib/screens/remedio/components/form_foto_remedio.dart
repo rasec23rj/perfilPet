@@ -1,14 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/models/remedio_model.dart';
 import 'package:lifepet_app/models/foto_remedio.dart';
+import 'package:lifepet_app/screens/remedio/components/detalhe_remedio.dart';
+import 'package:lifepet_app/screens/remedio/remedio_screen.dart';
 import 'package:lifepet_app/services/foto_remedio_service.dart';
 
 class FormFotoRemedioScreen extends StatefulWidget {
   int id;
-
-  FormFotoRemedioScreen({this.id});
+  Pet pet;
+  FormFotoRemedioScreen({this.id, this.pet});
 
   @override
   _FormFotoRemedioState createState() => _FormFotoRemedioState();
@@ -112,6 +115,12 @@ class _FormFotoRemedioState extends State<FormFotoRemedioScreen> {
                         newFotoRemedio = FotoRemedio(
                             nome: _nomeControler.text, remedios: widget.id),
                         fotoRemedioService.addFotoRemedio(newFotoRemedio),
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => DetalheRemedioScreen(
+                                  id: widget.id, pet: widget.pet)),
+                        ),
                       },
                       color: Colors.redAccent,
                       child: Text(
