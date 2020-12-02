@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
-import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/pet/components/form_pet_screen.dart';
+import 'package:lifepet_app/screens/pet/components/form_pet_screen.dart';
 import 'package:lifepet_app/services/pet_service.dart';
 import 'package:lifepet_app/components/custom_navbar.dart';
 

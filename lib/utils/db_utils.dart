@@ -69,6 +69,11 @@ class DbUtil {
         where: whereString, whereArgs: whereArgumento);
   }
 
+  static Future<void> deleteData(String table, String whereString) async {
+    final db = await database();
+    await db.delete(table, where: whereString);
+  }
+
   static Future<List<Map<String, dynamic>>> getData(String table) async {
     final db = await database();
     return db.query(table);
@@ -78,17 +83,6 @@ class DbUtil {
       String table,
       List<String> colunas,
       String whereString,
-      List<dynamic> whereArgumento) async {
-    final db = await database();
-    return db.query(table,
-        columns: colunas, where: whereString, whereArgs: whereArgumento);
-  }
-
-  static Future<List<Map<String, dynamic>>> getDataDetalheWhere(
-      String table,
-      List<String> colunas,
-      String whereString,
-      String join,
       List<dynamic> whereArgumento) async {
     final db = await database();
     return db.query(table,

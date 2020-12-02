@@ -23,6 +23,16 @@ class FotoRemedioService {
     DbUtil.insertData("fotosRemedios", fotosRemedios.toMap());
   }
 
+  Future<String> deleteFotoRemedio(int id) async {
+    var db = await sql.openDatabase('pets.db');
+
+    db
+        .rawQuery('DELETE FROM fotosRemedios where fotosRemedios.id = ${id}')
+        .then((value) {
+      return value.length;
+    });
+  }
+
   Future<FotoRemedio> updateRemedio(int id, FotoRemedio fotoRemedio) async {
     String whereString = "id = ?";
     List<dynamic> whereArgumento = [id];

@@ -9,7 +9,8 @@ class Main extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: LoginScreen(),
-      theme: ThemeData(primaryColor: Colors.redAccent),
+      theme: ThemeData(
+          primaryColor: Colors.redAccent, backgroundColor: Colors.white),
       debugShowCheckedModeBanner: false,
     );
   }

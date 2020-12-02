@@ -44,7 +44,6 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
       _loadFotoRemedio = _getFotoRemedios(widget.id);
 
       nomePet = widget.pet.nome;
-      print("nomePet: ${nomePet}");
     });
   }
 
@@ -137,6 +136,10 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
     return await fotoRemedioService.getFotoRemedio(id);
   }
 
+  Future<void> _deleteFotoRemedios(int id) async {
+    return await fotoRemedioService.deleteFotoRemedio(id);
+  }
+
   Future<void> _selectedDate(String inicio, String fim) async {
     String strDtInicio = inicio;
     DateTime parseDt = DateTime.parse(strDtInicio);
@@ -156,32 +159,34 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
   Widget Grid(orientation) {
     return GridView.builder(
         itemCount: remedioList.length,
+        padding: EdgeInsets.all(5),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: (orientation == Orientation.portrait) ? 2 : 4),
+            crossAxisCount: (orientation == Orientation.portrait) ? 3 : 4),
         itemBuilder: (BuildContext context, int index) {
           final item = remedioList[index];
           return Wrap(
-            spacing: 10.0, // gap between adjacent chips
+            spacing: 10.0,
+            runSpacing: 50.0, // gap between adjacent chips
 
             children: <Widget>[
               InkWell(
                 onTap: () {
-                  //_showMyDialog(context, item);
-                  createNewMessage(context, item);
+                  _showMyDialog(context, item);
+                  // createNewMessage(context, item);
                 },
-                child: AspectRatio(
-                  aspectRatio: 1,
-                  child: item.nome == null
-                      ? Text('No image selected.')
-                      : Image.file(
-                          File(item.nome),
-                          fit: BoxFit.fitWidth,
-                          alignment: Alignment.center,
-                          width: 250.0,
-                          height: 200.0,
-                        ),
-                ),
+                child: item.nome == null
+                    ? Text('No image selected.')
+                    : Image.file(
+                        File(item.nome),
+                        alignment: Alignment.center,
+                        width: 220,
+                        height: 180,
+                        fit: BoxFit.scaleDown,
+                      ),
               ),
+              Spacer(
+                flex: 1,
+              )
             ],
           );
         });
@@ -212,6 +217,84 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
     );
   }
 
+  Future<void> _showMyDialog(context, item) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return SizedBox(
+          width: double.maxFinite,
+          height: double.infinity,
+          child: AlertDialog(
+            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+            content: Container(
+              height: double.infinity,
+              width: double.infinity,
+              padding: EdgeInsets.all(1),
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(0),
+                    child: Container(
+                      padding: EdgeInsets.all(0),
+                      child: item.nome == null
+                          ? Text('No image selected.')
+                          : Image.file(
+                              File(item.nome),
+                              filterQuality: FilterQuality.high,
+                              fit: BoxFit.fitHeight,
+                              width: double.maxFinite,
+                              height: double.infinity,
+                            ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 40, left: 10),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: Icon(Icons.arrow_back),
+                      color: Colors.red,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                  child: Icon(
+                    Icons.delete_forever,
+                    color: Colors.red,
+                  ),
+                  onPressed: () {
+                    _deleteFotoRemedios(item.id).then((value) {
+                      File tempLocalFile = File(item.nome);
+                      if (tempLocalFile.existsSync()) {
+                        // delete file
+                        tempLocalFile.delete(
+                          recursive: true,
+                        );
+                      }
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetalheRemedioScreen(
+                            id: remedios.id,
+                            pet: widget.pet,
+                          ),
+                        ),
+                      );
+                    });
+                  }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   createNewMessage(context, item) {
     return showDialog(
       barrierDismissible: false,
@@ -225,19 +308,38 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
                 },
                 child: Material(
                   child: Container(
-                    padding: const EdgeInsets.all(10),
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: item.nome == null
-                        ? Text('No image selected.')
-                        : Image.file(
-                            File(item.nome),
-                            fit: BoxFit.fitWidth,
-                            alignment: Alignment.center,
-                            width: 300.0,
-                            height: 400.0,
-                          ),
-                  ),
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: SizedBox(
+                        width: 300,
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                                padding: EdgeInsets.all(0),
+                                child: Container(
+                                  padding: EdgeInsets.all(0),
+                                  child: item.nome == null
+                                      ? Text('No image selected.')
+                                      : Image.file(
+                                          File(item.nome),
+                                          filterQuality: FilterQuality.high,
+                                          fit: BoxFit.fitHeight,
+                                        ),
+                                )),
+                            Padding(
+                              padding: EdgeInsets.only(top: 40, left: 10),
+                              child: IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                icon: Icon(Icons.arrow_back_ios),
+                                color: Colors.red,
+                              ),
+                            )
+                          ],
+                        ),
+                      )),
                 ));
           },
         );
