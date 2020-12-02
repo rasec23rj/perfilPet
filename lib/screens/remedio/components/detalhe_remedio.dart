@@ -38,10 +38,14 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _loadremedio = _getRemedios(widget.id);
-    _loadFotoRemedio = _getFotoRemedios(widget.id);
 
-    nomePet = widget.pet.nome;
+    setState(() {
+      _loadremedio = _getRemedios(widget.id);
+      _loadFotoRemedio = _getFotoRemedios(widget.id);
+
+      nomePet = widget.pet.nome;
+      print("nomePet: ${nomePet}");
+    });
   }
 
   @override
@@ -50,7 +54,7 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
       future: _loadremedio,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         remedios = snapshot.data;
-        _selectedDate(remedios.inicioData, remedios.fimData);
+
         if (snapshot.hasData) {
           return Scaffold(
             appBar: AppBar(
@@ -60,27 +64,9 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
               child: Column(
                 children: <Widget>[
                   Flexible(
-                      flex: 1,
-                      child: Container(
-                          padding: EdgeInsets.all(10),
-                          child: Card(
-                            color: Colors.white,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListTile(
-                                  leading: Icon(
-                                    Icons.healing,
-                                    size: 50,
-                                  ),
-                                  title: Text('Nome: ${remedios.nome}'),
-                                  subtitle: Text(
-                                      'Incio: ${updatedDtIncio} \t\r\n Fim: ${updatedDtIncio}\t\r\n Hora: ${remedios.hora}\t\r\n Descrição: ${remedios.descricao}'),
-                                ),
-                              ],
-                            ),
-                          ))),
+                    flex: 1,
+                    child: Remedios(),
+                  ),
                   Flexible(
                     flex: 2,
                     child: Container(
@@ -95,34 +81,7 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
                               final orientation =
                                   MediaQuery.of(context).orientation;
                               return Expanded(
-                                child: GridView.builder(
-                                    itemCount: remedioList.length,
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: (orientation ==
-                                                    Orientation.portrait)
-                                                ? 2
-                                                : 3),
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      final item = remedioList[index];
-                                      return Wrap(
-                                        spacing:
-                                            8.0, // gap between adjacent chips
-                                        runSpacing: 4.0, // gap between lines
-                                        children: <Widget>[
-                                          item.nome == null
-                                              ? Text('No image selected.')
-                                              : Image.file(
-                                                  File(item.nome),
-                                                  fit: BoxFit.fitWidth,
-                                                  alignment: Alignment.center,
-                                                  width: 150.0,
-                                                  height: 150.0,
-                                                ),
-                                        ],
-                                      );
-                                    }),
+                                child: Grid(orientation),
                               );
                             } else if (asyncSnapshot.hasError) {
                               return Center(
@@ -146,8 +105,10 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        FormFotoRemedioScreen(id: remedios.id, pet: widget.pet),
+                    builder: (context) => FormFotoRemedioScreen(
+                      id: remedios.id,
+                      pet: widget.pet,
+                    ),
                   ),
                 );
               },
@@ -190,5 +151,97 @@ class _DetalheRemedioScreenState extends State<DetalheRemedioScreen> {
         print("updatedDtFim: ${updatedDtFim}");
       }
     });
+  }
+
+  Widget Grid(orientation) {
+    return GridView.builder(
+        itemCount: remedioList.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: (orientation == Orientation.portrait) ? 2 : 4),
+        itemBuilder: (BuildContext context, int index) {
+          final item = remedioList[index];
+          return Wrap(
+            spacing: 10.0, // gap between adjacent chips
+
+            children: <Widget>[
+              InkWell(
+                onTap: () {
+                  //_showMyDialog(context, item);
+                  createNewMessage(context, item);
+                },
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: item.nome == null
+                      ? Text('No image selected.')
+                      : Image.file(
+                          File(item.nome),
+                          fit: BoxFit.fitWidth,
+                          alignment: Alignment.center,
+                          width: 250.0,
+                          height: 200.0,
+                        ),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  Widget Remedios() {
+    _selectedDate(remedios.inicioData, remedios.fimData);
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Card(
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              leading: Icon(
+                Icons.healing,
+                size: 50,
+              ),
+              title: Text('Nome: ${remedios.nome}'),
+              subtitle: Text(
+                  'Incio: ${updatedDtIncio} \t\r\n Fim: ${updatedDtIncio}\t\r\n Hora: ${remedios.hora}\t\r\n Descrição: ${remedios.descricao}'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  createNewMessage(context, item) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return WillPopScope(
+                onWillPop: () {
+                  return Future.value(true);
+                },
+                child: Material(
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: item.nome == null
+                        ? Text('No image selected.')
+                        : Image.file(
+                            File(item.nome),
+                            fit: BoxFit.fitWidth,
+                            alignment: Alignment.center,
+                            width: 300.0,
+                            height: 400.0,
+                          ),
+                  ),
+                ));
+          },
+        );
+      },
+    );
   }
 }

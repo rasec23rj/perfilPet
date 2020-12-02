@@ -1,6 +1,6 @@
 class FotoRemedio {
   String nome;
-  String foto;
+
   int id;
   int remedios;
 
@@ -8,7 +8,6 @@ class FotoRemedio {
     this.nome,
     this.id,
     this.remedios,
-    this.foto,
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +21,5 @@ class FotoRemedio {
     id = map["id"];
     nome = map["nome"];
     remedios = map["remedios"];
-    foto = map["foto"];
   }
 }

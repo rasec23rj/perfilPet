@@ -43,6 +43,7 @@ class _FormFotoRemedioState extends State<FormFotoRemedioScreen> {
           });
     }
     print("foto id: ${widget.id}");
+    print("newFotoRemedio: ${widget.pet}");
     super.initState();
   }
 
@@ -149,7 +150,6 @@ class _FormFotoRemedioState extends State<FormFotoRemedioScreen> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
         _nomeControler.text = pickedFile.path;
-        print("_nomeControler: ${_nomeControler}");
       } else {
         print('No image selected.');
       }
