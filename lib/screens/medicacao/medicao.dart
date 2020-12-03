@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/screens/remedio/remedio_screen.dart';
+import 'package:lifepet_app/screens/vacinas/vacinas_screen.dart';
 
 class MedicacaoScreen extends StatefulWidget {
   Pet pet;
@@ -52,7 +53,7 @@ class _MedicacaoScreenState extends State<MedicacaoScreen> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          RemedioScreen(id: widget.pet.id_pet)),
+                          VacinasScreen(id: widget.pet.id_pet)),
                 );
               },
             ),
