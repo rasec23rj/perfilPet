@@ -145,7 +145,9 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                             iconSize: 35,
                                             onPressed: () {
                                               _showFoto(
-                                                  remedioList[index].id, index);
+                                                  remedioList[index].id,
+                                                  index,
+                                                  remedioList[index].nome);
                                             },
                                           ),
                                         ),
@@ -271,14 +273,14 @@ class _RemedioScreenState extends State<RemedioScreen> {
     );
   }
 
-  Future<void> _showFoto(IdRemedio, index) async {
+  Future<void> _showFoto(IdRemedio, index, remedio) async {
     _loadFotoRemedio = _getFotoRemedios(IdRemedio);
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('_showFoto'),
+          title: Text('Imagens  do remédio ${remedio}'),
           content: SingleChildScrollView(
             child: FutureBuilder(
                 future: _loadFotoRemedio,
@@ -316,7 +318,6 @@ class _RemedioScreenState extends State<RemedioScreen> {
   }
 
   Widget Grid(remedioFotoList, index) {
-    print("remedioFotoList[index].nome: ${remedioFotoList[index].nome}");
     return remedioFotoList[index].nome == null
         ? Image.asset('assets/images/pet.png')
         : Image.file(
