@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:lifepet_app/helpers/notifications_manager.dart';
+import 'package:lifepet_app/models/foto_remedio.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/models/remedio_model.dart';
+import 'package:lifepet_app/services/foto_remedio_service.dart';
 import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/remedio/components/form_remedio_pet_screen.dart';
 import 'package:lifepet_app/services/pet_service.dart';
 import 'package:lifepet_app/services/remedio_service.dart';
@@ -25,25 +29,29 @@ class RemedioScreen extends StatefulWidget {
 }
 
 class _RemedioScreenState extends State<RemedioScreen> {
-  int _counter = 0;
   NotificationManager notificationManager = NotificationManager();
   var texto = '0';
   final PetService petService = PetService();
   final RemedioService remedioService = RemedioService();
+  FotoRemedioService fotoRemedioService = FotoRemedioService();
   List<Remedio> remedioList = [];
+  //List<FotoRemedio> remedioFotoList = [];
   Future<Pet> _loadPet;
   Future<List> _loadRemedio;
   DateTime selectdDate = DateTime.now();
   String updatedDt;
+  String updatedDtFinal;
   String horaTimer;
-
+  Future<List> _loadFotoRemedio;
+  File _image;
+  int _counter = 0;
+  List<FotoRemedio> remedioFotoList = List();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    print("id: ${widget.id}");
     _loadPet = _getPet(widget.id);
     _loadRemedio = _getRemedios(widget.id);
+    _loadRemedio.then((value) => fotos(value));
     notificationManager.initialuzeNotificatios();
   }
 
@@ -77,12 +85,6 @@ class _RemedioScreenState extends State<RemedioScreen> {
                   child: Icon(Icons.add),
                   backgroundColor: Colors.redAccent,
                 ),
-                // floatingActionButtonLocation:
-                //     FloatingActionButtonLocation.centerDocked,
-                // bottomNavigationBar: NavNarRemedio(
-                //   pet: widget.pet,
-                //   paginaAberta: 1,
-                // ),
               );
             } else {
               return Center(
@@ -91,30 +93,6 @@ class _RemedioScreenState extends State<RemedioScreen> {
             }
           }),
     );
-  }
-
-  Future<Pet> _getPet(int id) async {
-    return await petService.getPet(id);
-  }
-
-  Future<List> _getRemedios(int id) async {
-    return await remedioService.getRemedioPets(id);
-  }
-
-  Future<void> _selectedDate(String dateRem) async {
-    String strDt = dateRem;
-    DateTime parseDt = DateTime.parse(strDt);
-    var newFormat = DateFormat("dd/MM/yyyy");
-
-    if (dateRem != null) {
-      updatedDt = newFormat.format(parseDt);
-    }
-  }
-
-  Future<void> _selectedHora(String horaRem) async {
-    if (horaRem != null) {
-      horaTimer = horaRem;
-    }
   }
 
   Widget Cards() {
@@ -133,9 +111,10 @@ class _RemedioScreenState extends State<RemedioScreen> {
                         itemCount: remedioList.length,
                         itemBuilder: (context, index) {
                           final item = remedioList[index];
-
-                          _selectedDate(remedioList[index].inicioData);
+                          _selectedDate(remedioList[index].inicioData,
+                              remedioList[index].fimData);
                           _selectedHora(remedioList[index].hora);
+                          _getFotoRemedios(remedioList[index].id);
                           _sheduleDailyNotifications(
                               remedioList[index].hora,
                               remedioList[index].inicioData,
@@ -153,8 +132,23 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                     Expanded(
                                       flex: 2,
                                       child: ListTile(
-                                        leading: Icon(Icons.healing,
-                                            color: Colors.red),
+                                        leading: Ink(
+                                          decoration: const ShapeDecoration(
+                                            color: Colors.white,
+                                            shape: CircleBorder(),
+                                          ),
+                                          child: IconButton(
+                                            icon: Icon(
+                                              Icons.healing,
+                                              color: Colors.red,
+                                            ),
+                                            iconSize: 35,
+                                            onPressed: () {
+                                              _showFoto(
+                                                  remedioList[index].id, index);
+                                            },
+                                          ),
+                                        ),
                                         title: Text(
                                           remedioList[index].nome,
                                           style: TextStyle(
@@ -165,8 +159,7 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                           ),
                                         ),
                                         subtitle: Text(
-                                          updatedDt =
-                                              "${updatedDt} -  ${horaTimer}",
+                                          " Data inicio: ${updatedDt}\n\tData fim: ${updatedDtFinal}\n\tHorario: ${horaTimer}\n\tDescrição: ${remedioList[index].descricao} ",
                                           style: TextStyle(
                                               decoration: widget.teste,
                                               fontFamily: "Montserrat",
@@ -174,6 +167,20 @@ class _RemedioScreenState extends State<RemedioScreen> {
                                               color: Colors.red),
                                           maxLines: 10,
                                         ),
+                                        trailing: Ink(
+                                          decoration: const ShapeDecoration(
+                                            color: Colors.white,
+                                            shape: CircleBorder(),
+                                          ),
+                                          child: IconButton(
+                                            icon: Icon(Icons.more_vert),
+                                            iconSize: 30,
+                                            onPressed: () {
+                                              _showDescricao();
+                                            },
+                                          ),
+                                        ),
+                                        isThreeLine: true,
                                         onTap: () {
                                           Navigator.push(
                                             context,
@@ -209,6 +216,127 @@ class _RemedioScreenState extends State<RemedioScreen> {
         ],
       ),
     );
+  }
+
+  Future<Pet> _getPet(int id) async {
+    return await petService.getPet(id);
+  }
+
+  Future<List> _getRemedios(int id) async {
+    return await remedioService.getRemedioPets(id);
+  }
+
+  Future<void> _selectedDate(String dateRem, String dataFim) async {
+    DateTime parseDt = DateTime.parse(dateRem);
+    DateTime parseDtFinal = DateTime.parse(dataFim);
+    var newFormat = DateFormat("dd/MM/yyyy");
+
+    if (dateRem != null) {
+      updatedDt = newFormat.format(parseDt);
+      updatedDtFinal = newFormat.format(parseDtFinal);
+    }
+  }
+
+  Future<void> _selectedHora(String horaRem) async {
+    if (horaRem != null) {
+      horaTimer = horaRem;
+    }
+  }
+
+  Future<void> _showDescricao() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('AlertDialog Title'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('This is a demo alert dialog.'),
+                Text('Would you like to approve of this message?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Approve'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showFoto(IdRemedio, index) async {
+    _loadFotoRemedio = _getFotoRemedios(IdRemedio);
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('_showFoto'),
+          content: SingleChildScrollView(
+            child: FutureBuilder(
+                future: _loadFotoRemedio,
+                builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
+                  if (asyncSnapshot.hasData) {
+                    remedioFotoList = asyncSnapshot.data;
+                    return Container(
+                      padding: EdgeInsets.all(1),
+                      child: Grid(remedioFotoList, index),
+                    );
+                  } else if (asyncSnapshot.hasError) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  } else {
+                    return Center(
+                      child: Text("Este pet não possui foto de  remédios"),
+                    );
+                  }
+                }),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Sair'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget Grid(remedioFotoList, index) {
+    print("remedioFotoList[index].nome: ${remedioFotoList[index].nome}");
+    return remedioFotoList[index].nome == null
+        ? Image.asset('assets/images/pet.png')
+        : Image.file(
+            File(remedioFotoList[index].nome),
+            fit: BoxFit.fitWidth,
+            alignment: Alignment.center,
+            width: 100.0,
+            height: 100.0,
+          );
+  }
+
+  Future<List> _getFotoRemedios(int id) async {
+    return await fotoRemedioService.getFotoRemedio(id);
+  }
+
+  Future<List> fotos(valores) async {
+    setState(() {
+      // _loadFotoRemedio = _getFotoRemedios(value.);
+      print("valores: ${valores}");
+    });
   }
 
   void _showNotificationAgenda(

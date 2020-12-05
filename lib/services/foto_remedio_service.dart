@@ -1,5 +1,3 @@
-import 'dart:wasm';
-
 import 'package:lifepet_app/models/foto_remedio.dart';
 import 'package:lifepet_app/utils/db_utils.dart';
 import 'package:sqflite/sqflite.dart' as sql;
@@ -7,6 +5,7 @@ import 'package:path/path.dart' as path;
 
 class FotoRemedioService {
   List<String> colunas = ["id", "nome", "remedios"];
+  List<FotoRemedio> _fotoRemedioList = [];
 
   Future<List> getFotoRemedio(int id) async {
     String whereString = "remedios = ?";
@@ -14,9 +13,15 @@ class FotoRemedioService {
     final dataList = await DbUtil.getDataWhere(
         "fotosRemedios", colunas, whereString, whereArgumento);
 
-    return dataList
+    _fotoRemedioList = dataList
         .map((fotosRemedios) => FotoRemedio.fromMap(fotosRemedios))
         .toList();
+
+    if (_fotoRemedioList.isEmpty) {
+      return _fotoRemedioList = null;
+    } else {
+      return _fotoRemedioList;
+    }
   }
 
   void addFotoRemedio(FotoRemedio fotosRemedios) {
