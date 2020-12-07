@@ -1,17 +1,19 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:lifepet_app/helpers/notifications_manager.dart';
 import 'package:lifepet_app/models/foto_remedio.dart';
 import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/models/remedio_model.dart';
+import 'package:lifepet_app/screens/remedio/components/form_foto_remedio.dart';
 import 'package:lifepet_app/services/foto_remedio_service.dart';
 import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/remedio/components/form_remedio_pet_screen.dart';
 import 'package:lifepet_app/services/pet_service.dart';
 import 'package:lifepet_app/services/remedio_service.dart';
 import 'package:lifepet_app/screens/remedio/components/detalhe_remedio.dart';
 import 'package:intl/intl.dart';
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
 
 class RemedioScreen extends StatefulWidget {
   int id;
@@ -34,7 +36,8 @@ class _RemedioScreenState extends State<RemedioScreen> {
   final PetService petService = PetService();
   final RemedioService remedioService = RemedioService();
   FotoRemedioService fotoRemedioService = FotoRemedioService();
-  List<Remedio> remedioList = [];
+  List<Remedio> remedioList = List();
+
   //List<FotoRemedio> remedioFotoList = [];
   Future<Pet> _loadPet;
   Future<List> _loadRemedio;
@@ -46,13 +49,19 @@ class _RemedioScreenState extends State<RemedioScreen> {
   File _image;
   int _counter = 0;
   List<FotoRemedio> remedioFotoList = List();
+
   @override
   void initState() {
     super.initState();
     _loadPet = _getPet(widget.id);
     _loadRemedio = _getRemedios(widget.id);
-    _loadRemedio.then((value) => fotos(value));
     notificationManager.initialuzeNotificatios();
+
+    setState(() {
+      _loadPet = _getPet(widget.id);
+      _loadRemedio = _getRemedios(widget.id);
+      print("state: ${widget.id}");
+    });
   }
 
   @override
@@ -273,70 +282,186 @@ class _RemedioScreenState extends State<RemedioScreen> {
     );
   }
 
-  Future<void> _showFoto(IdRemedio, index, remedio) async {
-    _loadFotoRemedio = _getFotoRemedios(IdRemedio);
+  Future<void> _showFoto(idRemedio, index, remedio) async {
+    _loadFotoRemedio = _getFotoRemedios(idRemedio);
+
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Imagens  do remédio ${remedio}'),
-          content: SingleChildScrollView(
-            child: FutureBuilder(
-                future: _loadFotoRemedio,
-                builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
-                  if (asyncSnapshot.hasData) {
-                    remedioFotoList = asyncSnapshot.data;
-                    return Container(
-                      padding: EdgeInsets.all(1),
-                      child: Grid(remedioFotoList, index),
-                    );
-                  } else if (asyncSnapshot.hasError) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.redAccent,
-                      ),
-                    );
-                  } else {
-                    return Center(
-                      child: Text("Este pet não possui foto de  remédios"),
-                    );
-                  }
-                }),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Sair'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+        return FutureBuilder(
+          future: _loadFotoRemedio,
+          builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
+            if (asyncSnapshot.hasData) {
+              remedioFotoList = asyncSnapshot.data;
+              return Container(
+                padding: EdgeInsets.all(1),
+                child: slideShow(
+                    context, remedioFotoList, index, remedio, idRemedio),
+              );
+            } else {
+              return Container(
+                padding: EdgeInsets.all(1),
+                child: slideShow(
+                    context, remedioFotoList, index, remedio, idRemedio),
+              );
+            }
+          },
         );
       },
     );
   }
 
-  Widget Grid(remedioFotoList, index) {
-    return remedioFotoList[index].nome == null
-        ? Image.asset('assets/images/pet.png')
-        : Image.file(
-            File(remedioFotoList[index].nome),
-            fit: BoxFit.fitWidth,
-            alignment: Alignment.center,
-            width: 100.0,
-            height: 100.0,
-          );
+  Widget slideShow(
+      BuildContext context, remedioFotoList, index, remedio, idRemedio) {
+    return Scaffold(
+      body: Builder(
+        builder: (context) {
+          if (remedioFotoList.length != 0) {
+            return Stack(
+              children: <Widget>[
+                Hero(
+                  tag: remedioFotoList[index].id,
+                  child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: double.infinity,
+                    child: CarouselSlider(
+                      options: CarouselOptions(
+                        height: MediaQuery.of(context).size.height,
+                        viewportFraction: 1.0,
+                        enlargeCenterPage: false,
+                        // autoPlay: false,
+                      ),
+                      items: remedioFotoList
+                          .map<Widget>(
+                            (item) => Container(
+                                child: item.nome == null
+                                    ? Image.asset('assets/images/pet.png')
+                                    : Image.file(
+                                        File(item.nome),
+                                        fit: BoxFit.fitHeight,
+                                        alignment: Alignment.center,
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                      )),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 40, left: 10),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.redAccent,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.arrow_back),
+                            color: Colors.white,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: 40,
+                          left: MediaQuery.of(context).size.width / 1.5,
+                          right: 0),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.redAccent,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.delete_rounded),
+                            color: Colors.white,
+                            onPressed: () {
+                              _deleteFotoRemedios(remedioFotoList[index].id)
+                                  .then((value) {
+                                File tempLocalFile =
+                                    File(remedioFotoList[index].nome);
+                                if (tempLocalFile.existsSync()) {
+                                  // delete file
+                                  tempLocalFile.delete(
+                                    recursive: true,
+                                  );
+                                  _ReloadFotoRemedios(
+                                      remedioFotoList[index].id);
+                                }
+
+                                // Navigator.of(context).pop();
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            );
+          } else {
+            return Container(
+              alignment: Alignment.center,
+              child: Text("Sem foto do remédio",
+                  style: TextStyle(color: Colors.redAccent, fontSize: 25)),
+            );
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (idRemedio != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FormFotoRemedioScreen(
+                  id: idRemedio,
+                  pet: widget.pet,
+                ),
+              ),
+            );
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FormFotoRemedioScreen(
+                  id: remedioFotoList[index].id,
+                  pet: widget.pet,
+                ),
+              ),
+            );
+          }
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+  }
+
+  Future<void> _deleteFotoRemedios(int id) async {
+    return await fotoRemedioService.deleteFotoRemedio(id);
   }
 
   Future<List> _getFotoRemedios(int id) async {
     return await fotoRemedioService.getFotoRemedio(id);
   }
 
-  Future<List> fotos(valores) async {
+  Future<List> _ReloadFotoRemedios(int id) async {
     setState(() {
-      // _loadFotoRemedio = _getFotoRemedios(value.);
-      print("valores: ${valores}");
+      _loadPet = _getPet(id);
+      _loadRemedio = _getRemedios(id);
+      print("state delete: ${widget.id}");
     });
   }
 
