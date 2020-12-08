@@ -116,13 +116,13 @@ class _FormFotoRemedioState extends State<FormFotoRemedioScreen> {
                         newFotoRemedio = FotoRemedio(
                             nome: _nomeControler.text, remedios: widget.id),
                         fotoRemedioService.addFotoRemedio(newFotoRemedio),
-                        Navigator.of(context).pop()
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => RemedioScreen(
-                        //           id: widget.id, pet: widget.pet)),
-                        // ),
+                        //Navigator.of(context).pop()
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RemedioScreen(
+                                  id: widget.id, pet: widget.pet)),
+                        ),
                       },
                       color: Colors.redAccent,
                       child: Text(

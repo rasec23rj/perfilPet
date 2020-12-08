@@ -11,12 +11,14 @@ class Remedio {
 
   Remedio(
       {this.nome,
-      this.inicioData,
-      this.fimData,
-      this.hora,
-      this.descricao,
-      this.id,
-      this.pet});
+        this.inicioData,
+        this.fimData,
+        this.hora,
+        this.descricao,
+        this.id,
+        this.pet});
+
+
 
   Map<String, dynamic> toMap() {
     return {
@@ -39,4 +41,6 @@ class Remedio {
     descricao = map["descricao"];
     hora = map["hora"];
   }
+
+
 }
