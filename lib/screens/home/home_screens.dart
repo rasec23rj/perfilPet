@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lifepet_app/models/pet_model.dart';
+import 'package:lifepet_app/screens/home/foto_bloc.dart';
 import 'file:///C:/Users/jt/Desktop/Projetos/perfilPet-master/lib/screens/pet/components/form_pet_screen.dart';
 import 'package:lifepet_app/services/pet_service.dart';
 import 'package:lifepet_app/screens/home/components/pet_card.dart';
@@ -18,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _loadPets = _getAllPets();
     super.initState();
+
   }
 
   @override

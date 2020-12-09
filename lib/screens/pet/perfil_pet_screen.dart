@@ -36,9 +36,6 @@ class _PerfilPetScreenState extends State<PerfilPetScreen> {
           if (snapshot.hasData) {
             pet = snapshot.data;
             return Scaffold(
-              appBar: AppBar(
-                title: Text("Perfil do ${pet.nome}"),
-              ),
               body: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +45,8 @@ class _PerfilPetScreenState extends State<PerfilPetScreen> {
                         Hero(
                           tag: new Text('pet.id_pet'),
                           child: Container(
-                            margin: EdgeInsets.all(10),
+                            width: double.infinity,
+                            height: 350,
                             child: Container(
                               child: pet.imageURL == null
                                   ? Text('No image selected.')
@@ -62,6 +60,16 @@ class _PerfilPetScreenState extends State<PerfilPetScreen> {
                             ),
                           ),
                         ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 40, left: 10),
+                          child: IconButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: Icon(Icons.arrow_back_ios),
+                            color: Colors.white,
+                          ),
+                        )
                       ],
                     ),
 
@@ -160,7 +168,7 @@ class _PerfilPetScreenState extends State<PerfilPetScreen> {
       margin: EdgeInsets.all(10),
       width: 100,
       decoration: BoxDecoration(
-        // color: Color(0xFFF8F2F7),
+        color: Color(0xFFF8F2F7),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(

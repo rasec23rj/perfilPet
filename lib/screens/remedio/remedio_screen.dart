@@ -53,11 +53,7 @@ class _RemedioScreenState extends State<RemedioScreen> {
   @override
   void initState() {
     super.initState();
-
-    ///_loadPet = _getPet(widget.id);
-    ////_loadRemedio = _getRemedios(widget.id);
     notificationManager.initialuzeNotificatios();
-
     setState(() {
       _loadPet = _getPet(widget.id);
       _loadRemedio = _getRemedios(widget.id);
