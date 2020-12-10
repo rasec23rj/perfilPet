@@ -8,6 +8,7 @@ import 'package:lifepet_app/screens/remedio/components/slideShow.dart';
 import 'package:lifepet_app/services/remedio_service.dart';
 
 String updatedDt;
+
 Widget remedioCard(context, _loadRemedio, pet) {
   List<Remedio> remedioList = List();
   final RemedioService remedioService = RemedioService();
@@ -29,15 +30,21 @@ Widget remedioCard(context, _loadRemedio, pet) {
                       itemCount: remedioList.length,
                       itemBuilder: (context, index) {
                         final item = remedioList[index];
-                                                    selectedDate(remedioList[index].inicioData, remedioList[index].fimData,
-                             remedioList[index].hora, remedioList[index].descricao);
+                        selectedDate(
+                            remedioList[index].inicioData,
+                            remedioList[index].fimData,
+                            remedioList[index].hora,
+                            remedioList[index].descricao);
 
                         remedioService.sheduleDailyNotifications(
-                            remedioList[index].hora, remedioList[index].inicioData, remedioList[index].nome, pet.nome);
+                            remedioList[index].hora,
+                            remedioList[index].inicioData,
+                            remedioList[index].nome,
+                            pet.nome);
 
                         return Card(
                           key: Key(item.id.toString()),
-                          shadowColor: Colors.transparent,
+                          shadowColor: Colors.grey,
                           color: Colors.white,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -69,7 +76,6 @@ Widget remedioCard(context, _loadRemedio, pet) {
                                                 remedioList[index],
                                                 pet,
                                                 remedioFotoList);
-
                                           },
                                         ),
                                       ),
@@ -97,9 +103,7 @@ Widget remedioCard(context, _loadRemedio, pet) {
                                         child: IconButton(
                                           icon: Icon(Icons.more_vert),
                                           iconSize: 30,
-                                          onPressed: () {
-
-                                          },
+                                          onPressed: () {},
                                         ),
                                       ),
                                       isThreeLine: true,
@@ -152,17 +156,17 @@ Future<void> _showFoto(_loadFotoRemedio, context, id, index, nome,
         builder: (BuildContext context, AsyncSnapshot asyncSnapshot) {
           if (asyncSnapshot.hasData) {
             remedioFotoList = asyncSnapshot.data;
+            print("_showFotoCard: ${remedioFotoList}");
             return Container(
               padding: EdgeInsets.all(1),
               //context, remedioFotoList, index, remedio, idRemedio, pet
-              child: slideShow(
-                  context, remedioFotoList, index, nome, id, pet),
+
+              child: slideShow(context, remedioFotoList, index, nome, id, pet),
             );
           } else {
             return Container(
               padding: EdgeInsets.all(1),
-              child: slideShow(
-                  context, remedioFotoList, index, nome, id, pet),
+              child: slideShow(context, remedioFotoList, index, nome, id, pet),
             );
           }
         },
@@ -179,7 +183,6 @@ Future<void> selectedDate(
 
   if (dateRem != null) {
     updatedDt =
-    "Data inicio: ${ newFormat.format(parseDt)}\n\tData fim: ${newFormat.format(parseDtFinal)}\n\tHorario: ${horaRem}\n\tDescrição: ${descricao} ";
+        "Data inicio: ${newFormat.format(parseDt)}\n\tData fim: ${newFormat.format(parseDtFinal)}\n\tHorario: ${horaRem}\n\tDescrição: ${descricao} ";
   }
 }
-

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:intl/intl.dart';
@@ -27,6 +28,7 @@ class RemedioService {
     "descricao",
     "pet"
   ];
+
   void notificacao() {
     notificationManager.initialuzeNotificatios();
   }
@@ -74,13 +76,18 @@ class RemedioService {
         .toList();
   }
 
-
-
   Future<List> getFotoRemedios(int id) async {
     return await fotoRemedioService.getFotoRemedio(id);
   }
 
-  Future<void> deleteFotoRemedios(int id) async {
+  Future<void> deleteFotoRemedios(int id, String nome) async {
+    File tempLocalFile = File(nome);
+    if (tempLocalFile.existsSync()) {
+      // delete file
+      tempLocalFile.delete(
+        recursive: true,
+      );
+    }
     return await fotoRemedioService.deleteFotoRemedio(id);
   }
 
@@ -165,6 +172,4 @@ class RemedioService {
     notificationManager.showNotificationsAgendaPeriodo(
         hora, miniute, dateRemedioFinal, nome, pet);
   }
-
-
 }

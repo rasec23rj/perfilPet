@@ -5,12 +5,15 @@ import 'package:lifepet_app/models/pet_model.dart';
 import 'package:lifepet_app/models/remedio_model.dart';
 import 'package:lifepet_app/models/foto_remedio.dart';
 import 'package:lifepet_app/screens/remedio/components/detalhe_remedio.dart';
+import 'package:lifepet_app/screens/remedio/remedio_controller.dart';
 import 'package:lifepet_app/screens/remedio/remedio_screen.dart';
 import 'package:lifepet_app/services/foto_remedio_service.dart';
+import 'package:provider/provider.dart';
 
 class FormFotoRemedioScreen extends StatefulWidget {
   int id;
   Pet pet;
+
   FormFotoRemedioScreen({this.id, this.pet});
 
   @override
@@ -30,6 +33,7 @@ class _FormFotoRemedioState extends State<FormFotoRemedioScreen> {
   File _image;
   final picker = ImagePicker();
   final ImagePicker _picker = ImagePicker();
+
   @override
   void initState() {
     if (widget.id != -1) {
@@ -55,7 +59,8 @@ class _FormFotoRemedioState extends State<FormFotoRemedioScreen> {
   @override
   Widget build(BuildContext context) {
     FotoRemedio newFotoRemedio;
-
+    RemedioController remedioController =
+        Provider.of<RemedioController>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Cadastro de foto Remédio"),
@@ -116,13 +121,14 @@ class _FormFotoRemedioState extends State<FormFotoRemedioScreen> {
                         newFotoRemedio = FotoRemedio(
                             nome: _nomeControler.text, remedios: widget.id),
                         fotoRemedioService.addFotoRemedio(newFotoRemedio),
-                        //Navigator.of(context).pop()
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RemedioScreen(
-                                  id: widget.id, pet: widget.pet)),
-                        ),
+                        remedioController.reloadFotoRemedio(widget.id),
+                        Navigator.pop(context)
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => RemedioScreen(
+                        //           id: widget.id, pet: widget.pet)),
+                        // ),
                       },
                       color: Colors.redAccent,
                       child: Text(
