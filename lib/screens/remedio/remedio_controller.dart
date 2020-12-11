@@ -20,9 +20,9 @@ class RemedioController extends ChangeNotifier {
 
   deleteFotoShowId(id, nome) {
     idFotoRemedio = id;
-    idFotoRemedio = nome;
+    nomeFotoRemedio = nome;
     notifyListeners();
-    return {idFotoRemedio, idFotoRemedio};
+    return {idFotoRemedio, nomeFotoRemedio};
   }
 
   reloadFotoRemedio(id) {
