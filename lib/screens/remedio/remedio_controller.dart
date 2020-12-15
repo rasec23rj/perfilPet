@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:lifepet_app/models/foto_remedio.dart';
+import 'package:lifepet_app/services/foto_remedio_service.dart';
 import 'package:lifepet_app/services/remedio_service.dart';
 
 class RemedioController extends ChangeNotifier {
@@ -11,7 +12,7 @@ class RemedioController extends ChangeNotifier {
   final RemedioService remedioService = RemedioService();
   Future<List> loadFotoRemedio;
   List<FotoRemedio> remedioFotoList = List();
-
+  FotoRemedioService fotoRemedioService = FotoRemedioService();
   int carrosel(index) {
     current = index;
     notifyListeners();
@@ -33,4 +34,7 @@ class RemedioController extends ChangeNotifier {
 
     notifyListeners();
   }
+
+
+
 }

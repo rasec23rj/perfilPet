@@ -28,11 +28,11 @@ class _FormFotoRemedioState extends State<FormFotoRemedioScreen> {
   Future<FotoRemedio> _loadPet;
 
   final _nomeControler = TextEditingController();
-  final _remediosControler = TextEditingController();
+
 
   File _image;
   final picker = ImagePicker();
-  final ImagePicker _picker = ImagePicker();
+
 
   @override
   void initState() {

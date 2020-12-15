@@ -16,12 +16,7 @@ class FotoRemedioService {
     _fotoRemedioList = dataList
         .map((fotosRemedios) => FotoRemedio.fromMap(fotosRemedios))
         .toList();
-
-    if (_fotoRemedioList.isEmpty) {
-      return _fotoRemedioList = null;
-    } else {
-      return _fotoRemedioList;
-    }
+    return _fotoRemedioList;
   }
 
   void addFotoRemedio(FotoRemedio fotosRemedios) {
